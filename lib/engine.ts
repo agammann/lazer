@@ -40,6 +40,7 @@ export function creditDeposit(s: State, id: string, proof: Proof, now: string) {
  d.credited = true; event(s, `Deposit credited: ${btc(d.sats)} tBTC after ${d.confirmations} confirmations.`, [id], now);
 }
 export function reserveWithdrawal(s: State, w: Withdrawal, changeScript: string, now: string) {
+ if (s.withdrawals.some(x => x.id === w.id)) throw Error('Withdrawal identifier was already used. Start a fresh withdrawal.');
  if (s.frozen) throw Error(s.frozen); const a = account(s, w.account); integer(w.sats, 1000, 1_000_000, 'Withdrawal satoshis'); integer(w.fee, 1, 100_000, 'Network fee'); if (w.sats + w.fee > balance(s, w.account).availableSats) throw Error('Insufficient available Bitcoin including the network fee.');
  if (s.withdrawals.some(x => x.account === w.account && x.status === 'prepared')) throw Error('Retry your prepared withdrawal before creating another.'); if (s.withdrawals.length >= 2000) throw Error('Withdrawal storage capacity reached. Contact the operator.');
  if (!w.inputs.length || new Set(w.inputs).size !== w.inputs.length) throw Error('Invalid withdrawal inputs.'); let input = 0;

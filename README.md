@@ -33,7 +33,7 @@ npm run dev
 
 Open the preview URL printed by the dev server. The local sign in is a development identity; hosted Sites uses dispatch-owned ChatGPT authentication. Do not expose the development server to the public Internet or trust identity headers outside the Sites dispatcher.
 
-Validation: `npm run typecheck`, `npm test`, `npm run build`. GitHub Actions runs all three. The 23 automated checks cover the matching engine, signed transactions, and complete production API handlers against local D1 SQL. Concurrent deposit, order and withdrawal requests verify atomic balances and idempotent retries. API tests explicitly replace authentication and chain data in an isolated test bundle; they never call the public network or load a deployment secret. These checks are distinct from public Testnet transactions and the Bitcoin Core integration test below.
+Validation: `npm run typecheck`, `npm test`, `npm run build`. GitHub Actions runs all three. The 24 automated checks cover the matching engine, signed transactions, and complete production API handlers against local D1 SQL. Concurrent deposit, order and withdrawal requests verify atomic balances and idempotent retries. Withdrawal identifiers remain unique even after short term request receipts expire. API tests explicitly replace authentication and chain data in an isolated test bundle; they never call the public network or load a deployment secret. These checks are distinct from public Testnet transactions and the Bitcoin Core integration test below.
 
 ## Architecture and operating limits
 
