@@ -118,3 +118,17 @@ test('API competing withdrawals cannot reserve the same backing input', async ()
   assert.equal(state.accounts.reduce((n, a) => n + a.sats, 0), 200000 - 10000 - state.withdrawals[0].fee);
   invariant(await rawState());
 });
+
+test('API keeps older open orders visible and cancellable after recent history fills', async () => {
+  await funded();
+  const placed = await action({ action: 'place', person: 'Alice', side: 'sell', price: 60000, sats: 1000 });
+  const original = placed.orders[0], state = await rawState();
+  for (let i = 0; i < 110; i++) state.orders.push({ ...original, id: crypto.randomUUID(), seq: ++state.sequence, cancelled: true });
+  invariant(state);
+  await db.prepare('UPDATE exchange_sessions SET state=?').bind(JSON.stringify(state)).run();
+  const visible = await read();
+  assert.ok(visible.orders.some(o => o.id === original.id), 'An open reservation must remain reachable from Your orders');
+  const cancelled = await action({ action: 'cancel', person: 'Alice', orderId: original.id });
+  assert.equal(cancelled.accounts[0].reservedSats, 0);
+  assert.equal(cancelled.accounts[0].availableSats, 200000);
+});

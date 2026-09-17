@@ -33,7 +33,7 @@ npm run dev
 
 Open the preview URL printed by the dev server. The local sign in is a development identity; hosted Sites uses dispatch-owned ChatGPT authentication. Do not expose the development server to the public Internet or trust identity headers outside the Sites dispatcher.
 
-Validation: `npm run typecheck`, `npm test`, `npm run build`. GitHub Actions runs all three. The 24 automated checks cover the matching engine, signed transactions, and complete production API handlers against local D1 SQL. Concurrent deposit, order and withdrawal requests verify atomic balances and idempotent retries. Withdrawal identifiers remain unique even after short term request receipts expire. API tests explicitly replace authentication and chain data in an isolated test bundle; they never call the public network or load a deployment secret. These checks are distinct from public Testnet transactions and the Bitcoin Core integration test below.
+Validation: `npm run typecheck`, `npm test`, `npm run build`. GitHub Actions runs all three. The 25 automated checks cover the matching engine, signed transactions, and complete production API handlers against local D1 SQL. Concurrent deposit, order and withdrawal requests verify atomic balances and idempotent retries. Withdrawal identifiers remain unique even after short term request receipts expire. API tests explicitly replace authentication and chain data in an isolated test bundle; they never call the public network or load a deployment secret. These checks are distinct from public Testnet transactions and the Bitcoin Core integration test below.
 
 ## Architecture and operating limits
 
@@ -43,7 +43,7 @@ Testnet deposit keys derive from the secret on the server. Private keys never re
 
 Chain data and broadcasting use the fixed mempool.space Testnet 4 API. The application trusts that provider's answers; the bundled Bitcoin Core verification script provides an independent check. Bitcoin addresses cannot distinguish Testnet 3 from Testnet 4 by encoding, so use Core's `-testnet4` flag. Mainnet address encodings are rejected. Public market candles come from Coinbase and are reference data only.
 
-This intentionally bounded pilot supports 200 subaccounts, 500 open orders, 2,000 deposits, 2,000 withdrawals, and 100 unspent wallet inputs. The JSON ledger is limited to 1.8 MB. Recent order, trade, and event views are bounded. Export activity regularly. This architecture is not intended as an unlimited or high throughput financial service.
+This intentionally bounded pilot supports 200 subaccounts, 500 open orders, 2,000 deposits, 2,000 withdrawals, and 100 unspent wallet inputs. The JSON ledger is limited to 1.8 MB. Recent completed order, trade, and event views are bounded. Every open order remains visible and cancellable regardless of its age. Export activity regularly. This architecture is not intended as an unlimited or high throughput financial service.
 
 The operator must back up both D1 and the wallet secret, monitor capacity and network-provider failures, and reconcile Bitcoin backing. Detected confirmation loss pauses trading; frozen ledgers require operator reconciliation. Verification runs when users act, refresh, or leave the page visible for automatic pending transfer checks. There is no unattended server chain monitor. Never reset the database or rotate the wallet secret to clear an error while deposits remain.
 
