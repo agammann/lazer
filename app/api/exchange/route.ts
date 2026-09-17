@@ -44,7 +44,8 @@ export async function POST(req: Request) {
     const w = current.state.withdrawals.find(w => w.id === body.withdrawalId && w.account === id); if (!w) throw Error('Withdrawal not found for this account.');
     if (body.action === 'broadcast') await broadcast(w);
     const proof = await transactionProof(w.txid);
-    const confirmations = proof?.confirmations || 0, status = proof && proof.inBestChain && confirmations >= 6 ? 'confirmed' : proof ? 'broadcast' : 'prepared';
+    const confirmations = proof?.confirmations || 0, sent = body.action === 'broadcast' || w.status !== 'prepared';
+    const status = proof && proof.inBestChain && confirmations >= 6 ? 'confirmed' : proof || sent ? 'broadcast' : 'prepared';
     if (body.action === 'refreshWithdrawal' && w.confirmations === confirmations && w.status === status) return result(view(current.state, owner, current.revision));
     mutate = s => { const target = s.withdrawals.find(x => x.id === w.id)!; target.confirmations = confirmations; target.status = status; };
    } else throw Error('Unknown action.');

@@ -11,7 +11,7 @@ import { invariant } from '../work/engine.mjs';
 // Real D1 SQL and production request handlers; the chain provider is an explicit fixture.
 const seed = '33'.repeat(32), depositId = 'aa'.repeat(32), block = 'bb'.repeat(32);
 const origin = 'https://lazer.test';
-let mf, db, confirmations, broadcastCount, transactions, spent;
+let mf, db, confirmations, broadcastCount, transactions, spent, hideBroadcast;
 const originalFetch = globalThis.fetch;
 before(async () => {
   mf = new Miniflare({ modules: true, script: 'export default { fetch() { return new Response("test"); } }', d1Databases: ['DB'] });
@@ -30,7 +30,7 @@ before(async () => {
     }
     const outspend = path.match(/^\/tx\/([a-f0-9]{64})\/outspend\/(\d+)$/);
     if (outspend) return Response.json({ spent: spent.has(outspend[1] + ':' + outspend[2]) });
-    const tx = transactions.get(path.slice(4));
+    const id = path.slice(4), tx = hideBroadcast && id !== depositId ? null : transactions.get(id);
     return tx ? Response.json(tx) : new Response('Not found', { status: 404 });
   };
 });
@@ -40,7 +40,7 @@ beforeEach(async () => {
   for (const file of ['0000_abnormal_dragon_lord.sql', '0001_overconfident_doctor_doom.sql']) {
     for (const sql of readFileSync('drizzle/' + file, 'utf8').split(';').map(x => x.replace('--> statement-breakpoint', '').trim()).filter(Boolean)) await db.prepare(sql).run();
   }
-  confirmations = 6; broadcastCount = 0; transactions = new Map(); spent = new Set();
+  confirmations = 6; broadcastCount = 0; transactions = new Map(); spent = new Set(); hideBroadcast = false;
   const script = wallet(seed, accountId('owner', 'Alice')).script;
   transactions.set(depositId, { txid: depositId, status: { confirmed: true, block_hash: block, block_height: 100 }, vin: [{}], vout: [{ value: 200000, scriptpubkey: script }] });
 });
@@ -131,4 +131,19 @@ test('API keeps older open orders visible and cancellable after recent history f
   const cancelled = await action({ action: 'cancel', person: 'Alice', orderId: original.id });
   assert.equal(cancelled.accounts[0].reservedSats, 0);
   assert.equal(cancelled.accounts[0].availableSats, 200000);
+});
+
+test('API preserves an acknowledged broadcast when explorer indexing is delayed', async () => {
+  await funded();
+  const data = await action({ action: 'withdraw', person: 'Alice', address: wallet(seed, 'external').address, sats: 15000, feeLimit: 1000 });
+  const w = data.withdrawals[0]; hideBroadcast = true;
+  const sent = await action({ action: 'broadcast', person: 'Alice', withdrawalId: w.id });
+  assert.equal(sent.withdrawals[0].status, 'broadcast'); assert.equal(broadcastCount, 1);
+  const refreshing = await action({ action: 'refreshWithdrawal', person: 'Alice', withdrawalId: w.id });
+  assert.equal(refreshing.withdrawals[0].status, 'broadcast');
+  assert.equal(refreshing.accounts[0].sats, 200000 - 15000 - w.fee);
+  hideBroadcast = false;
+  const indexed = await action({ action: 'refreshWithdrawal', person: 'Alice', withdrawalId: w.id });
+  assert.equal(indexed.withdrawals[0].status, 'broadcast'); assert.equal(broadcastCount, 1);
+  invariant(await rawState());
 });
