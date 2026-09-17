@@ -29,6 +29,8 @@ export async function POST(req: Request) {
     const proof = await transactionProof(body.txid); if (!proof) throw Error('Transaction not found on Testnet 4 yet.');
     const already = current.state.deposits.some(d => d.account === id && d.txid === proof.txid && d.credited);
     if (!already) { for (const [vout, output] of proof.outputs.entries()) if (output.script === current.state.accounts[id].script) { const spend = await api(`/tx/${proof.txid}/outspend/${vout}`); if (!spend || spend.spent !== false) throw Error('Deposit output is already spent or cannot be verified.'); } }
+    const previous = current.state.deposits.find(d => d.account === id && d.txid === proof.txid), confirmations = proof.inBestChain ? proof.confirmations : 0;
+    if (previous && previous.confirmations === confirmations && (previous.credited || confirmations < 6)) return result(view(current.state, owner, current.revision));
     mutate = s => creditDeposit(s, id, proof, now);
    } else if (body.action === 'quote' || body.action === 'withdraw') {
     const destination = testnetAddress(body.address); if (Object.values(current.state.accounts).some(a => a.script === destination.script) || wallet(secret, 'treasury').script === destination.script) throw Error('Withdraw to an external Bitcoin Core wallet, not a Lazer deposit address.');
@@ -42,7 +44,9 @@ export async function POST(req: Request) {
     const w = current.state.withdrawals.find(w => w.id === body.withdrawalId && w.account === id); if (!w) throw Error('Withdrawal not found for this account.');
     if (body.action === 'broadcast') await broadcast(w);
     const proof = await transactionProof(w.txid);
-    mutate = s => { const target = s.withdrawals.find(x => x.id === w.id)!; target.confirmations = proof?.confirmations || 0; target.status = proof && proof.inBestChain && proof.confirmations >= 6 ? 'confirmed' : proof ? 'broadcast' : 'prepared'; };
+    const confirmations = proof?.confirmations || 0, status = proof && proof.inBestChain && confirmations >= 6 ? 'confirmed' : proof ? 'broadcast' : 'prepared';
+    if (body.action === 'refreshWithdrawal' && w.confirmations === confirmations && w.status === status) return result(view(current.state, owner, current.revision));
+    mutate = s => { const target = s.withdrawals.find(x => x.id === w.id)!; target.confirmations = confirmations; target.status = status; };
    } else throw Error('Unknown action.');
   }
   const updated = await changeState(commandId, payload, mutate); return result(view(updated.state, owner, updated.revision));

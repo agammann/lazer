@@ -13,7 +13,7 @@ Lazer is a Testnet pilot. It does not accept mainnet Bitcoin or real USD. Test c
 3. Open Alice's Deposit / Withdraw panel. Send test Bitcoin from Core to the displayed deposit address. Paste the transaction ID and check after six confirmations.
 4. Place Alice's sell order. Select Bob, choose Buy, and use the same quantity and price. The shared book uses price and time priority; another user may fill your order first.
 5. Withdraw Bob's acquired tBTC to his external Bitcoin Core receiving address. Review the amount and network fee before confirming.
-6. Check Transfers for transaction links and confirmation status. A prepared withdrawal retries the same signed transaction without charging again.
+6. Check Transfers for transaction links and confirmation status. Pending transfers are checked in rotation every minute while the page is visible, or immediately with Refresh. A prepared withdrawal retries the same signed transaction without charging again.
 
 Alice and Bob are separate subaccounts under your authenticated identity. Other signed in visitors have their own accounts. Resting buys reserve dUSD; resting sells reserve deposited tBTC. Trades settle both balances atomically. Cancellation releases the unfilled reservation. No trading fee is charged; withdrawals pay the Bitcoin miner fee.
 
@@ -33,7 +33,7 @@ npm run dev
 
 Open the preview URL printed by the dev server. The local sign in is a development identity; hosted Sites uses dispatch-owned ChatGPT authentication. Do not expose the development server to the public Internet or trust identity headers outside the Sites dispatcher.
 
-Validation: `npm run typecheck`, `npm test`, `npm run build`. GitHub Actions runs all three. Automated tests use explicit fixtures; they are distinct from public Testnet transactions.
+Validation: `npm run typecheck`, `npm test`, `npm run build`. GitHub Actions runs all three. The 23 automated checks cover the matching engine, signed transactions, and complete production API handlers against local D1 SQL. Concurrent deposit, order and withdrawal requests verify atomic balances and idempotent retries. API tests explicitly replace authentication and chain data in an isolated test bundle; they never call the public network or load a deployment secret. These checks are distinct from public Testnet transactions and the Bitcoin Core integration test below.
 
 ## Architecture and operating limits
 
@@ -45,7 +45,7 @@ Chain data and broadcasting use the fixed mempool.space Testnet 4 API. The appli
 
 This intentionally bounded pilot supports 200 subaccounts, 500 open orders, 2,000 deposits, 2,000 withdrawals, and 100 unspent wallet inputs. The JSON ledger is limited to 1.8 MB. Recent order, trade, and event views are bounded. Export activity regularly. This architecture is not intended as an unlimited or high throughput financial service.
 
-The operator must back up both D1 and the wallet secret, monitor capacity and network-provider failures, and reconcile Bitcoin backing. Detected confirmation loss pauses trading; frozen ledgers require operator reconciliation. Verification runs when users act or refresh, not through an unattended chain monitor. Never reset the database or rotate the wallet secret to clear an error while deposits remain.
+The operator must back up both D1 and the wallet secret, monitor capacity and network-provider failures, and reconcile Bitcoin backing. Detected confirmation loss pauses trading; frozen ledgers require operator reconciliation. Verification runs when users act, refresh, or leave the page visible for automatic pending transfer checks. There is no unattended server chain monitor. Never reset the database or rotate the wallet secret to clear an error while deposits remain.
 
 Mainnet operation, fiat rails, regulatory onboarding, disaster recovery certification, and an independent security audit are outside this Testnet release. There is no claim of readiness to custody valuable assets.
 

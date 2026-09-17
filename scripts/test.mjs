@@ -1,7 +1,10 @@
 import { spawnSync } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { build } from 'esbuild';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 mkdirSync('work', { recursive: true });
 for (const name of ['engine', 'bitcoin']) await build({ entryPoints: ['lib/' + name + '.ts'], bundle: true, platform: 'node', packages: 'external', format: 'esm', outfile: 'work/' + name + '.mjs' });
-const result = spawnSync(process.execPath, ['--test', 'tests/engine.test.mjs'], { stdio: 'inherit' });
+await build({ entryPoints: ['app/api/exchange/route.ts'], bundle: true, platform: 'node', packages: 'external', format: 'esm', outfile: 'work/exchange-route.mjs', plugins: [{ name: 'isolated-test-runtime', setup(builder) { builder.onResolve({ filter: /^(cloudflare:workers|@\/app\/chatgpt-auth)$/ }, () => ({ path: pathToFileURL(resolve('tests/fixtures/runtime.mjs')).href, external: true })); } }] });
+const result = spawnSync(process.execPath, ['--test', 'tests/engine.test.mjs', 'tests/api.test.mjs'], { stdio: 'inherit' });
 process.exit(result.status ?? 1);
