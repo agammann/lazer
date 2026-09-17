@@ -33,7 +33,7 @@ export async function POST(req: Request) {
    } else if (body.action === 'quote' || body.action === 'withdraw') {
     const destination = testnetAddress(body.address); if (Object.values(current.state.accounts).some(a => a.script === destination.script) || wallet(secret, 'treasury').script === destination.script) throw Error('Withdraw to an external Bitcoin Core wallet, not a Lazer deposit address.');
     const coins = await eligibleCoins(current.state), fees = await api('/v1/fees/recommended'); const rate = Math.min(100, Math.max(1, Math.ceil(fees?.hourFee || 1)));
-    const prepared = prepareWithdrawal(secret, coins, id, body.requestId, destination.address, body.sats, rate, now);
+    const prepared = prepareWithdrawal(secret, coins, id, commandId, destination.address, body.sats, rate, now);
     if (prepared.withdrawal.sats + prepared.withdrawal.fee > balance(current.state, id).availableSats) throw Error('Not enough available Bitcoin including the fee.');
     if (body.action === 'quote') return result({ fee: prepared.withdrawal.fee, sats: body.sats, address: destination.address, rate });
     if (!Number.isSafeInteger(body.feeLimit) || body.feeLimit < prepared.withdrawal.fee || body.feeLimit > 100_000) throw Error('Network fee changed. Request and approve a fresh quote.');

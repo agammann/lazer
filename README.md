@@ -48,3 +48,11 @@ The operator must back up both D1 and the wallet secret, monitor capacity and ne
 Mainnet operation, fiat rails, regulatory onboarding, disaster recovery certification, and an independent security audit are outside this Testnet release. There is no claim of readiness to custody valuable assets.
 
 Engineering inspiration: Jane Street's [Building an Exchange](https://www.janestreet.com/tech-talks/building-an-exchange/). Lazer is independently developed and is not affiliated with Jane Street.
+
+## Bitcoin Core integration test
+
+Run a separate Bitcoin Core regtest node with RPC on loopback only. Set `BITCOIN_CLI` to your executable path, `CORE_REGTEST_DATADIR` to its data directory, and `CORE_REGTEST_PORT` to its RPC port (default 18845). Run `npm test` to generate the test bundles, then `node scripts/regtest-integration.mjs`.
+
+The integration script refuses any chain other than regtest. It creates uniquely named mining and receiving wallets, mines local blocks, deposits coins, executes Alice's sell and Bob's buy, signs a withdrawal with the same wallet code used by the application, submits it to Bitcoin Core's mempool validation, and verifies Bob's exact receipt after six blocks. It does not use mainnet or Testnet 4 funds. Results are written to ignored `work/regtest-evidence.json`.
+
+For an independent public Testnet receipt check, use `node scripts/core-verify.mjs TXID TESTNET_ADDRESS SATOSHIS WALLET`. Optional environment variables are `BITCOIN_CLI`, `CORE_DATADIR`, and `CORE_RPC_PORT`. This read only script requires a synchronized Testnet 4 node and reports the exact output and confirmations.
