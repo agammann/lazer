@@ -2,6 +2,8 @@
 
 A cyberpunk Bitcoin Testnet 4 trading terminal with funded accounts, a shared limit order book, simulated USD, and Bitcoin Core deposits and withdrawals.
 
+[Open Lazer](https://lazer.alx21.chatgpt.site) · [Source](https://github.com/agammann/lazer) · [Verification workflow](https://github.com/agammann/lazer/actions/workflows/verify.yml)
+
 Lazer is a Testnet pilot. It does not accept mainnet Bitcoin or real USD. Test coins and dUSD have no redeemable monetary value here.
 
 ## Using Lazer
