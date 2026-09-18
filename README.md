@@ -17,6 +17,14 @@ Each subaccount starts with 100,000 dUSD and zero Bitcoin. There are no trading 
 
 Read the [complete user guide](docs/USER-GUIDE.md) for the walkthrough, amounts, and troubleshooting.
 
+## BTC for ETH escrow development
+
+The next Lazer model is trading Bitcoin directly for **native ETH on Ethereum**, with a separate two of three Bitcoin escrow for each trade. Alice, Bob, and the Lazer operator each hold a key; the operator cannot spend alone. The operator key belongs in a separate Bitcoin Core wallet.
+
+The repository now includes [escrow and ETH payment tools](docs/ESCROW.md). They construct Bitcoin settlement transactions, validate independently supplied signatures, and verify an exact native ETH payment bound to the agreed trade. Bitcoin Core has confirmed release and refund transactions on regtest. Ethereum verification currently has fixture tests; a public Sepolia settlement has not been verified.
+
+This is a separate command line development flow. The public website still runs the Testnet order book described above. Escrow mainnet execution is disabled, and no funds or balances are migrated from the existing pilot.
+
 ## Build and operate
 
 | Guide | What it covers |
@@ -24,6 +32,7 @@ Read the [complete user guide](docs/USER-GUIDE.md) for the walkthrough, amounts,
 | [Local development](docs/DEVELOPMENT.md) | Prerequisites, private configuration, database setup, commands, local sign in |
 | [Deployment and operations](docs/DEPLOYMENT.md) | Sites deployment, backups, release checks, Testnet and mainnet status |
 | [Verification](docs/VERIFICATION.md) | Automated checks, Bitcoin Core regtest, recorded public Testnet receipts |
+| [BTC for ETH escrow](docs/ESCROW.md) | Independent keys, Core signing, ETH payment verification, test commands and remaining work |
 | [Architecture](docs/ARCHITECTURE.md) | Matching, custody, storage, authentication, capacity limits |
 | [Contributing](CONTRIBUTING.md) | Change scope, validation, bug reports, secret handling |
 

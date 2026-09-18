@@ -1,0 +1,40 @@
+{
+  "network": "regtest",
+  "bitcoinCoreVersion": 310100,
+  "implementation": "Lazer two of three native SegWit escrow",
+  "privateKeysExported": false,
+  "cliRefundFlowVerified": true,
+  "ethereumPaymentBroadcast": false,
+  "cases": [
+    {
+      "kind": "release",
+      "fundingTxid": "ce4d0158003e759aa625be3244d9605144bf689854f7c4f4af66168c7ef907ca",
+      "settlementTxid": "7a1f7a6c34ed2b45dfebe134f8e4ee9c986a57b3189ea699204cf4bfb25b726b",
+      "sats": 100000,
+      "feeSats": 1000,
+      "signers": [
+        "seller",
+        "buyer"
+      ],
+      "operatorAloneRejected": true,
+      "coreMempoolAccepted": true,
+      "confirmations": 6
+    },
+    {
+      "kind": "refund",
+      "fundingTxid": "e9607fd0c83f02e7aa786a39fb09f35d5f4dd622e0a4cf7a3c686d8f177417e2",
+      "settlementTxid": "b15ab6d80dca8e5730ff2f510b414a7ae3c801d48ab7ba8ae4727693128287fb",
+      "sats": 100000,
+      "feeSats": 1000,
+      "signers": [
+        "seller",
+        "arbitrator"
+      ],
+      "operatorAloneRejected": true,
+      "coreMempoolAccepted": true,
+      "confirmations": 6
+    }
+  ],
+  "passed": true,
+  "checkedAt": "2026-09-18T04:42:10.566Z"
+}

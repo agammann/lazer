@@ -12,7 +12,9 @@ npm test
 npm run build
 ```
 
-The current suite contains 26 checks covering matching, reservations, signing, ownership, concurrency, and idempotent retries. API tests execute production handlers against local D1 SQL with explicitly substituted authentication and chain fixtures. They do not contact the public chain, load the deployment seed, or establish mainnet readiness.
+The current suite contains 49 checks covering matching, reservations, signing, ownership, concurrency, idempotent retries, Bitcoin escrow, and native ETH payment verification. API tests execute production handlers against local D1 SQL with explicitly substituted authentication and chain fixtures. They do not contact the public chain, load the deployment seed, or establish mainnet readiness.
+
+The original public Testnet release had 26 checks. Its historical evidence below retains that count. The separate escrow implementation adds 12 Bitcoin protocol tests and 11 Ethereum verification tests. See the [escrow guide](ESCROW.md) for the Bitcoin Core escrow harness and its recorded regtest evidence.
 
 [GitHub Actions](https://github.com/agammann/lazer/actions/workflows/verify.yml) runs these checks on pushes to main and on pull requests.
 

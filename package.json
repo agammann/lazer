@@ -13,6 +13,8 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "test": "node scripts/test.mjs",
+    "test:escrow:core": "node scripts/escrow-regtest.mjs",
+    "escrow": "node scripts/escrow-cli.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

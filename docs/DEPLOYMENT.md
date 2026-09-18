@@ -12,7 +12,7 @@
 
 There is no supported switch that converts this release into a mainnet exchange. The code fixes wallet derivation, chain provider, storage namespace, and UI to Testnet 4.
 
-Every account receives free simulated dUSD. Allowing it to purchase valuable mainnet Bitcoin would create unbacked purchasing power. Mainnet requires a defined funded settlement asset and changes to that balance model, or a separate wallet transfer product. A network flag alone cannot supply those requirements.
+Every account in the existing hosted order book receives free simulated dUSD. Allowing it to purchase valuable mainnet Bitcoin would create unbacked purchasing power. The selected replacement model is individual Bitcoin escrow trades paid in native ETH on Ethereum, with the Lazer operator as arbitrator. The separate protocol tools are described in [BTC for ETH escrow](ESCROW.md); they do not convert the deployed ledger or enable mainnet. A network flag alone cannot supply the missing workflow and operational requirements.
 
 ## Existing hosted deployment
 
