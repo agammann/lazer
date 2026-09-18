@@ -1,0 +1,4 @@
+# Documentation only. Do not use this placeholder as a wallet seed.
+# Generate your own ignored .dev.vars using docs/DEVELOPMENT.md.
+# Keep the same secret for the lifetime of that deployment's deposits.
+TESTNET_WALLET_SEED=REPLACE_WITH_YOUR_OWN_64_HEXADECIMAL_CHARACTERS
