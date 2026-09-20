@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { mkdirSync } from 'node:fs';
 const [rail, environment, value] = process.argv.slice(2);
 if (!rail || !environment || !value || process.argv.length !== 5) {
-  console.error('Usage: npm run funding:inspect -- <lightning|ark|liquid> <mainnet|test|regtest> <invoice-or-address>');
+  console.error('Usage: npm run funding:inspect -- lightning <mainnet|test|regtest> <invoice>');
   process.exit(1);
 }
 try {

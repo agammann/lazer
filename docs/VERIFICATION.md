@@ -4,7 +4,9 @@
 
 ## Derivatives and Lightning milestone
 
-The suite now includes inverse P&L, collateral conservation, price/time matching, partial fills, liquidation scenarios, and offline Lightning/Ark/Liquid inspection. A separate Bitcoin Core/LND regtest run completed a 100,000 sat payment and 15,000 sat return. See [the evidence](evidence/lightning-regtest.json) and [reproduction instructions](DERIVATIVES.md#lightning-regtest-verification). The Lightning test is separate from browser practice balances; Ark and Liquid transfers are not verified.
+The suite now includes inverse P&L, collateral conservation, price/time matching, partial fills, liquidation scenarios, and offline Lightning invoice inspection. A separate Bitcoin Core/LND regtest run completed a 100,000 sat payment and 15,000 sat return. See [the evidence](evidence/lightning-regtest.json) and [reproduction instructions](DERIVATIVES.md#lightning-regtest-verification). The Lightning test is separate from browser practice balances.
+
+Shared-market tests now exercise real local D1 SQL and the production route handlers: separate fictional identities, racing joins/orders, duplicate and stale commands, exact P&L, ownership, rate limits, and state recovery after a database-runtime restart. See [shared rooms](SHARED-MARKET.md). Production two-person authentication still requires separate user accounts.
 
 The historical Testnet and escrow evidence below applies to the legacy tools, not derivatives readiness.
 

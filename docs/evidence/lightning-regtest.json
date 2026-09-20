@@ -22,7 +22,6 @@
   "limits": [
     "Local regtest only; no valuable Bitcoin moved.",
     "Direct channel; no public routing or liquidity reliability claim.",
-    "Lightning proof is separate from the practice trading ledger.",
-    "No Ark or Liquid transfer was performed."
+    "Lightning proof is separate from the practice trading ledger."
   ]
 }

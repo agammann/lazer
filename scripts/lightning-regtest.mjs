@@ -71,7 +71,7 @@ try {
     return { paymentHash, sats, senderStatus: paid.status, receiverState: received.state, feeSats: Number(paid.fee_sat) };
   }
   const deposit = payment(alice, lazer, 100_000), withdrawal = payment(lazer, alice, 15_000);
-  const result = { checkedAt: new Date().toISOString(), network: 'regtest', coreVersion: core('getnetworkinfo').subversion, lndVersion: ln(alice, 'getinfo').version, channelFundingTxid: channel.funding_txid, deposit, withdrawal, remainingAtLazerSats: Number(ln(lazer, 'channelbalance').local_balance.sat), limits: ['Local regtest only; no valuable Bitcoin moved.', 'Direct channel; no public routing or liquidity reliability claim.', 'Lightning proof is separate from the practice trading ledger.', 'No Ark or Liquid transfer was performed.'] };
+  const result = { checkedAt: new Date().toISOString(), network: 'regtest', coreVersion: core('getnetworkinfo').subversion, lndVersion: ln(alice, 'getinfo').version, channelFundingTxid: channel.funding_txid, deposit, withdrawal, remainingAtLazerSats: Number(ln(lazer, 'channelbalance').local_balance.sat), limits: ['Local regtest only; no valuable Bitcoin moved.', 'Direct channel; no public routing or liquidity reliability claim.', 'Lightning proof is separate from the practice trading ledger.'] };
   assert.equal(result.remainingAtLazerSats, 85_000);
   mkdirSync('docs/evidence', { recursive: true });
   writeFileSync('docs/evidence/lightning-regtest.json', JSON.stringify(result, null, 2) + '\n');

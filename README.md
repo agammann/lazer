@@ -1,12 +1,16 @@
 # Lazer
 
-An independent Bitcoin derivatives project. Trade BTC/USD exposure, post collateral in sats, and settle profit or loss in sats. Lightning, Ark, and Liquid are the planned funding and withdrawal options.
+An independent Bitcoin derivatives project. Trade BTC/USD exposure, post collateral in sats, and settle profit or loss in sats. Lightning is the sole planned funding and withdrawal network.
 
 [Open Lazer](https://lazer.alx21.chatgpt.site/) · [Build specification](docs/DERIVATIVES.md) · [Verification workflow](https://github.com/agammann/lazer/actions/workflows/verify.yml)
 
-**Current milestone: a working derivatives practice lab, plus separately verified local Lightning payments. This is not a live derivatives venue, and mainnet deposits are disabled.** The practice market runs inside one browser tab with Alice and Bob as test roles. Its balances are not Bitcoin and cannot be withdrawn.
+**Current milestone: a solo practice terminal and server-saved shared test rooms, plus separately verified local Lightning payments. This is not a funded derivatives venue.** Shared rooms let two signed-in people trade as Alice and Bob. All derivatives balances are practice sats and cannot be withdrawn.
 
-## Try the derivatives lab
+## Trade with another person
+
+[Open shared test rooms](https://lazer.alx21.chatgpt.site/market). Sign in, choose **Open my room**, and give your room code to a second person. They sign in separately and choose **Join as Bob**. Orders, balances and the room journal are saved on the server. Read the [shared-room walkthrough](docs/SHARED-MARKET.md).
+
+## Try the solo derivatives lab
 
 1. As Alice, place a **Long** at $60,000 with 100 contracts and 2× leverage.
 2. Switch to Bob and place a **Short** with the same values. Each trader reserves 83,334 practice sats.
@@ -23,9 +27,8 @@ The scenario mechanism settles both sides of a pair together. It does not model 
 | Component | Verified behavior | Current limit |
 | :--- | :--- | :--- |
 | Derivatives lab | Limit orders, partial fills, reserved margin, inverse P&L, bilateral settlement, liquidation scenarios, journal replay | Local practice balances and scenario prices |
+| Shared test rooms | Signed-in roles, durable orders/balances, revision checks, idempotent commands, restart recovery | Two-person scenarios with practice sats; creator controls test prices |
 | Lightning | Bitcoin Core 31.1 + LND 0.21.3: 100,000 sat payment and 15,000 sat return, both settled | Separate local regtest harness; not wired to trading accounts |
-| Ark | Arkade SDK address decoding and test/mainnet boundary checks | No VTXO transfer or exit tested |
-| Liquid | liquidjs-lib address/script decoding and network checks | No L-BTC transfer or confidential output verification tested |
 | Legacy pilot | Public Testnet 4 deposit, spot trade against simulated USD, withdrawal to Bitcoin Core | Preserved at `/legacy`; separate ledger and wallet |
 
 See [Lightning payment evidence](docs/evidence/lightning-regtest.json) and the [verification guide](docs/VERIFICATION.md). The previous BTC/ETH escrow experiment is retained for reference; it is not the new product direction.
@@ -57,9 +60,9 @@ For actual local Lightning payment verification, install Bitcoin Core and LND, t
 
 ## Build direction
 
-Lazer will operate its own market, rather than execute trades through LN Markets. The next milestone is a server controlled test market with verified Lightning collateral: participant authentication, durable accounting, matching, price feeds, and settlement workers. Ark and Liquid require their own asset and network verification before funding can be enabled. See the [implementation sequence and release criteria](docs/DERIVATIVES.md#implementation-sequence).
+Lazer will operate its own market, rather than execute trades through LN Markets. Server-saved practice rooms are now implemented. The next milestone connects verified Lightning collateral to the market, with deposit reconciliation, withdrawal reservations, price feeds, and settlement workers. See the [implementation sequence and release criteria](docs/DERIVATIVES.md#implementation-sequence).
 
-The intended additions are clear risk previews, a replayable trading journal, and funding choices with explicit fees and settlement status. The repository makes no claim to better liquidity, execution speed, or mainnet readiness than an existing venue.
+The intended additions are clear risk previews, a replayable trading journal, and Lightning payments with explicit fees and settlement status. The repository makes no claim to better liquidity, execution speed, or mainnet readiness than an existing venue.
 
 | Guide | Purpose |
 | :--- | :--- |

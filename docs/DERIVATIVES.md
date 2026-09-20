@@ -4,11 +4,11 @@
 
 ## Product decision
 
-Lazer is being rebuilt as an independent BTC/USD derivatives market, with Lightning first and Ark and Liquid as additional funding/withdrawal options. BTC/ETH escrow and asset swaps are no longer the primary product. LN Markets is a product reference, not the execution backend.
+Lazer is being rebuilt as an independent BTC/USD derivatives market, with Lightning as the sole funding and withdrawal network. BTC/ETH escrow and asset swaps are no longer the primary product. LN Markets is a product reference, not the execution backend.
 
 Users take long or short Bitcoin price exposure. Bitcoin provides collateral and the settlement unit. A dollar contract size does not create a dollar balance or promise fiat redemption.
 
-The September 19, 2026 milestone is a local practice terminal with separately tested Lightning transport. It does not accept real collateral and is not a public multiuser derivatives exchange.
+The current milestone includes a local practice terminal, authenticated server-saved two-person test rooms, and separately tested Lightning transport. See the [shared-room guide](SHARED-MARKET.md). Neither trading mode accepts real collateral.
 
 ## Current contract and test behavior
 
@@ -37,10 +37,7 @@ These packages are pinned in `package-lock.json`. Their upstream repositories an
 | :--- | :--- | :--- |
 | Lightning | [`bitcoinjs/bolt11`](https://github.com/bitcoinjs/bolt11), `bolt11@1.4.1`, MIT | Decode test invoices, check amount/network/expiry |
 | Lightning node | [`lightningnetwork/lnd`](https://github.com/lightningnetwork/lnd), v0.21.3-beta, MIT | Actual local payment harness backed by Bitcoin Core |
-| Ark | [`arkade-os/ts-sdk`](https://github.com/arkade-os/ts-sdk), `@arkade-os/sdk@0.4.74`, MIT | Offline Ark address inspection |
-| Liquid | [`vulpemventures/liquidjs-lib`](https://github.com/vulpemventures/liquidjs-lib), `6.0.2-liquid.38`, MIT | Offline network, script and confidentiality inspection |
 
-Additional candidates, not installed or connected: [Alby Bitcoin Connect](https://github.com/getAlby/bitcoin-connect) for the user's Lightning wallet interface, [Liquid Wallet Kit](https://github.com/Blockstream/lwk) for durable Liquid wallet operations, and [Arkade Boltz integration](https://github.com/arkade-os/ts-sdk) for an explicit funding conversion where needed. A conversion belongs in the funding workflow; users do not perform one for every trade.
 
 LN Markets provides a [TypeScript SDK](https://github.com/ln-markets/sdk-typescript) and a [Signet API](https://docs.lnmarkets.com/en/api), but Lazer does not use either for execution. Its liquidity and risk systems are not supplied by those SDKs.
 
@@ -48,19 +45,15 @@ LN Markets provides a [TypeScript SDK](https://github.com/ln-markets/sdk-typescr
 
 ```sh
 npm run funding:inspect -- lightning regtest <BOLT11_INVOICE>
-npm run funding:inspect -- ark test <ARK_ADDRESS>
-npm run funding:inspect -- liquid test <LIQUID_TESTNET_ADDRESS>
 ```
 
-Replace bracketed arguments with a public invoice/address. Do not enter seed phrases, keys, macaroons, or wallet connection credentials. Run from the repository root. No external request is made by this command. Mainnet encodings can be inspected with `mainnet`, but inspection never enables payment or funding.
+Replace bracketed arguments with a Lightning invoice. Do not enter seed phrases, keys, macaroons, or wallet connection credentials. Run from the repository root. No external request is made by this command. Mainnet encodings can be inspected with `mainnet`, but inspection never enables payment or funding.
 
 The result always reports `transfersEnabled: false`, `ownershipVerified: false`, and `collateralCredited: false`.
 
 Network boundaries matter:
 
 - An `lntb` invoice does not distinguish Signet from another Bitcoin test network. Pin the receiving LND chain independently.
-- An Ark `tark` address similarly identifies a test family. Verify the Ark server's identity and chain, then VTXO state, expiry and exit conditions.
-- A Liquid address does not identify an asset. Crediting L-BTC requires verifying the expected asset ID and unblinding confirmed outputs. L-BTC must remain a distinct collateral asset from BTC unless an explicit conversion actually settles.
 - Payment preimages supplied by a browser are not sufficient deposit evidence. Only a reconciled server/node settlement can back a real ledger credit.
 
 ## Lightning regtest verification
@@ -83,19 +76,18 @@ The script creates new ignored directories under `work/lightning-regtest-<timest
 
 Reserve these loopback ports: Core RPC 18846, ZMQ 28346/28347, LND RPC 10019/10020, REST 10119/10120, peer 19735/19736. Do not run concurrent copies. The script does not publish ports or use the existing Testnet wallet seed. Logs, test keys, macaroons and RPC credentials remain ignored locally. Its `noseedbackup` configuration is exclusively for disposable regtest wallets and must never be copied into a real-money deployment.
 
-This verifies Lightning transport on a direct local channel, not public routing reliability, a trading collateral bridge, or Ark/Liquid transfers.
+This verifies Lightning transport on a direct local channel, not public routing reliability, a trading collateral bridge.
 
 ## Implementation sequence
 
 1. **Completed in this milestone:** bounded practice engine, functional browser terminal, replayable scenarios, offline funding inspectors, actual local Lightning round trip.
-2. **Durable server market:** authenticated independent participants, transactionally stored orders/fills/positions, monotonic sequence IDs, idempotent mutations, restart/replay recovery, withdrawals restricted to free verified collateral. Browser input must never select the authoritative price or balance.
+2. **Implemented for practice:** authenticated separate participants in shared rooms, durable market state with monotonic revisions, idempotent mutations, concurrent-update rejection and database restart recovery. Test prices advance only through creator-authorized bounded scenario steps. Verified collateral and withdrawal accounting remain unimplemented.
 3. **Lightning collateral bridge:** scoped LND credentials held by a separate service, exact invoice/account binding, settlement subscriptions plus backfill, unique payment-hash credits, durable withdrawal reservations, explicit fee limits, in-flight recovery, node-to-ledger reconciliation. Use regtest end to end before a funded public test network.
 4. **Derivatives risk service:** documented index/mark methodology with stale-feed halt, funding schedule, live exit orders, continuous liquidation independent of browser sessions, market maker accounts, price bands and exposure limits. Specify gap losses, insurance and default resolution; do not reuse the practice loss cap as a live risk model.
-5. **Ark and Liquid:** enable one rail at a time after round-trip tests and recovery tests. Ark needs server compatibility and exit monitoring. Liquid needs confidential output/asset verification, reorg handling, fee funding and peg/conversion accounting. Do not assume Testnet 4, Bitcoin Signet, Ark test chains and Liquid testnet interoperate.
-6. **Public test release:** multiple independent accounts, real test collateral only, deposit → trade → exit → withdrawal evidence, restart and outage tests, reconciled balances, limits and operational monitoring.
-7. **Mainnet candidate:** independent security review, resolved findings, backed liquidity, key custody and recovery rehearsals, incident response, and the operator's jurisdiction/product obligations resolved. There is no mainnet switch in the practice lab.
+5. **Public test release:** multiple independent accounts, real test collateral only, deposit → trade → exit → withdrawal evidence, restart and outage tests, reconciled balances, limits and operational monitoring.
+6. **Mainnet candidate:** independent security review, resolved findings, backed liquidity, key custody and recovery rehearsals, incident response, and the operator's jurisdiction/product obligations resolved. There is no mainnet switch in the practice lab.
 
-The web interface can be hosted on Sites. LND, an Ark watcher, Liquid wallet services, and continuous risk workers require separately operated persistent services. Browser timers or a static website cannot operate those services reliably.
+The web interface can be hosted on Sites. LND and continuous risk workers require separately operated persistent services. Browser timers or a static website cannot operate those services reliably.
 
 ## Preserve the legacy pilot
 
