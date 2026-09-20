@@ -2,6 +2,10 @@
 
 [Back to Lazer](../README.md)
 
+The derivatives lab at `/` runs without secrets. After `npm ci`, run `npm run dev`. The wallet seed and database instructions below apply to the preserved Testnet pilot at `/legacy`.
+
+See [the derivatives guide](DERIVATIVES.md) for the Lightning harness and funding inspectors.
+
 ## Prerequisites
 
 Use Git, Node.js 22.13 or later, and npm. CI uses Node.js 22. Bitcoin Core is optional for the local UI and automated suite, and required for the separate node integration checks.

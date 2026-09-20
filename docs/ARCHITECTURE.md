@@ -2,6 +2,8 @@
 
 [Back to Lazer](../README.md)
 
+> This guide covers the preserved Testnet 4 pilot at `/legacy`. For the current derivatives rebuild, read [the derivatives specification](DERIVATIVES.md).
+
 ## Runtime and trust boundaries
 
 The frontend uses React and vinext. Cloudflare Workers executes the API, and D1 persists the ledger. Hosted identity comes from the Sites dispatcher. The portable development server supplies a local mock identity on loopback only.

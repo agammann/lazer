@@ -1,62 +1,73 @@
 # Lazer
 
-A cyberpunk Bitcoin Testnet 4 trading terminal. Deposit test Bitcoin, trade on a shared limit order book as Alice and Bob, and withdraw to Bitcoin Core.
+An independent Bitcoin derivatives project. Trade BTC/USD exposure, post collateral in sats, and settle profit or loss in sats. Lightning, Ark, and Liquid are the planned funding and withdrawal options.
 
-[Open Lazer](https://lazer.alx21.chatgpt.site/) · [Current release](https://github.com/agammann/lazer/releases/tag/v0.1.3-testnet) · [Verification workflow](https://github.com/agammann/lazer/actions/workflows/verify.yml)
+[Open Lazer](https://lazer.alx21.chatgpt.site/) · [Build specification](docs/DERIVATIVES.md) · [Verification workflow](https://github.com/agammann/lazer/actions/workflows/verify.yml)
 
-**Lazer currently runs on Testnet 4 with simulated dollars (dUSD). Mainnet Bitcoin and real USD are not supported.** Test coins and dUSD have no redeemable monetary value in Lazer. This is a bounded public pilot, not a production custody service.
+**Current milestone: a working derivatives practice lab, plus separately verified local Lightning payments. This is not a live derivatives venue, and mainnet deposits are disabled.** The practice market runs inside one browser tab with Alice and Bob as test roles. Its balances are not Bitcoin and cannot be withdrawn.
 
-## Try it
+## Try the derivatives lab
 
-1. [Open Lazer](https://lazer.alx21.chatgpt.site/), sign in with ChatGPT, and open your Alice and Bob accounts.
-2. Deposit Testnet 4 Bitcoin from Bitcoin Core. Deposits become available after six confirmations.
-3. Place a sell order as Alice and a matching buy order as Bob. Buy orders reserve dUSD; sell orders reserve deposited Bitcoin.
-4. Withdraw Bob's Bitcoin to an external Testnet 4 wallet and follow its confirmations in Transfers.
+1. As Alice, place a **Long** at $60,000 with 100 contracts and 2× leverage.
+2. Switch to Bob and place a **Short** with the same values. Each trader reserves 83,334 practice sats.
+3. Press **Price +5%**. At $63,000, Alice gains 7,936 sats and Bob loses 7,936 sats.
+4. Press **Settle both sides** to realize the result and release unused margin.
+5. Open **Journal** to export, replay, or restart the test. Try partial fills, canceled orders, and adverse price movements.
 
-Each subaccount starts with 100,000 dUSD and zero Bitcoin. There are no trading fees. Withdrawals pay a Bitcoin network fee. Other visitors use the same order book and may fill an order before your other subaccount does.
+The order book uses price then time priority and prevents same-trader matches. Margin and P&L calculations use integer arithmetic. Sessions survive reloads within the same tab. Closing the tab can discard the session; export a journal to preserve it.
 
-Read the [complete user guide](docs/USER-GUIDE.md) for the walkthrough, amounts, and troubleshooting.
+The scenario mechanism settles both sides of a pair together. It does not model a production perpetual market's funding payments, independent close orders, insurance fund, or continuous liquidation process.
 
-## BTC for ETH escrow development
+## What works today
 
-The next Lazer model is trading Bitcoin directly for **native ETH on Ethereum**, with a separate two of three Bitcoin escrow for each trade. Alice, Bob, and the Lazer operator each hold a key; the operator cannot spend alone. The operator key belongs in a separate Bitcoin Core wallet.
+| Component | Verified behavior | Current limit |
+| :--- | :--- | :--- |
+| Derivatives lab | Limit orders, partial fills, reserved margin, inverse P&L, bilateral settlement, liquidation scenarios, journal replay | Local practice balances and scenario prices |
+| Lightning | Bitcoin Core 31.1 + LND 0.21.3: 100,000 sat payment and 15,000 sat return, both settled | Separate local regtest harness; not wired to trading accounts |
+| Ark | Arkade SDK address decoding and test/mainnet boundary checks | No VTXO transfer or exit tested |
+| Liquid | liquidjs-lib address/script decoding and network checks | No L-BTC transfer or confidential output verification tested |
+| Legacy pilot | Public Testnet 4 deposit, spot trade against simulated USD, withdrawal to Bitcoin Core | Preserved at `/legacy`; separate ledger and wallet |
 
-The repository now includes [escrow and ETH payment tools](docs/ESCROW.md). They construct Bitcoin settlement transactions, validate independently supplied signatures, and verify an exact native ETH payment bound to the agreed trade. Bitcoin Core has confirmed release and refund transactions on regtest. Ethereum verification currently has fixture tests; a public Sepolia settlement has not been verified.
+See [Lightning payment evidence](docs/evidence/lightning-regtest.json) and the [verification guide](docs/VERIFICATION.md). The previous BTC/ETH escrow experiment is retained for reference; it is not the new product direction.
 
-This is a separate command line development flow. The public website still runs the Testnet order book described above. Escrow mainnet execution is disabled, and no funds or balances are migrated from the existing pilot.
+## Run locally
 
-## Build and operate
+Use Node.js 22.13 or later and npm:
 
-| Guide | What it covers |
-| :--- | :--- |
-| [Local development](docs/DEVELOPMENT.md) | Prerequisites, private configuration, database setup, commands, local sign in |
-| [Deployment and operations](docs/DEPLOYMENT.md) | Sites deployment, backups, release checks, Testnet and mainnet status |
-| [Verification](docs/VERIFICATION.md) | Automated checks, Bitcoin Core regtest, recorded public Testnet receipts |
-| [BTC for ETH escrow](docs/ESCROW.md) | Independent keys, Core signing, ETH payment verification, test commands and remaining work |
-| [Architecture](docs/ARCHITECTURE.md) | Matching, custody, storage, authentication, capacity limits |
-| [Contributing](CONTRIBUTING.md) | Change scope, validation, bug reports, secret handling |
-
-For a fresh checkout, start with the local development guide. It includes the required wallet seed and database steps; installing dependencies alone does not create a working trading environment.
-
-## What has been verified
-
-The public Testnet cycle completed on September 17, 2026: a 100,000 sat deposit, a 20,000 sat Alice to Bob trade, and a 15,000 sat withdrawal to Bob's Bitcoin Core wallet. The withdrawal paid a 143 sat network fee and was independently observed with seven confirmations. See the [recorded evidence and its limits](docs/VERIFICATION.md#public-testnet-evidence).
-
-The automated suite covers the matching engine and production API handlers, including concurrent requests and withdrawal retries. GitHub Actions runs type checking, tests, and a production build.
-
-## Project structure
-
-```text
-app/             Trading interface, API routes, hosted authentication
-lib/             Matching engine, Bitcoin signing, ledger persistence
-db/              Database schema and binding helpers
-drizzle/         Applied SQL migrations and schema history
-tests/           Engine and isolated API tests
-scripts/         Build helpers and Bitcoin Core verification
-docs/            User, developer, and operator guides
-components/ui/   Bundled reusable UI components
-build/           Sites integration and its upstream license
-vendor/          Vendored styling and its upstream license
+```sh
+git clone https://github.com/agammann/lazer.git
+cd lazer
+npm ci
+npm run dev
 ```
 
-Engineering inspiration: Jane Street's [Building an Exchange](https://www.janestreet.com/tech-talks/building-an-exchange/). Lazer is independently developed and is not affiliated with Jane Street.
+Open the URL printed by the dev server. The derivatives lab needs no wallet seed or API keys. Read [local development](docs/DEVELOPMENT.md) for legacy Testnet wallet setup.
+
+```sh
+npm run typecheck
+npm test
+npm run build
+```
+
+For actual local Lightning payment verification, install Bitcoin Core and LND, then follow [the regtest instructions](docs/DERIVATIVES.md#lightning-regtest-verification). No mainnet funds are needed.
+
+## Existing Testnet funds
+
+[Open the legacy Testnet wallet](https://lazer.alx21.chatgpt.site/legacy). Its signing seed, D1 ledger, deposit addresses, API, and withdrawal path are preserved. No existing balance is copied into the derivatives lab. The [legacy user guide](docs/USER-GUIDE.md) explains withdrawals.
+
+## Build direction
+
+Lazer will operate its own market, rather than execute trades through LN Markets. The next milestone is a server controlled test market with verified Lightning collateral: participant authentication, durable accounting, matching, price feeds, and settlement workers. Ark and Liquid require their own asset and network verification before funding can be enabled. See the [implementation sequence and release criteria](docs/DERIVATIVES.md#implementation-sequence).
+
+The intended additions are clear risk previews, a replayable trading journal, and funding choices with explicit fees and settlement status. The repository makes no claim to better liquidity, execution speed, or mainnet readiness than an existing venue.
+
+| Guide | Purpose |
+| :--- | :--- |
+| [Derivatives specification](docs/DERIVATIVES.md) | Product, contracts, funding packages, integration sequence, test harness |
+| [Development](docs/DEVELOPMENT.md) | Runtime and legacy configuration |
+| [Deployment](docs/DEPLOYMENT.md) | Public hosting and legacy wallet operations |
+| [Verification](docs/VERIFICATION.md) | Checks and recorded evidence |
+| [Legacy architecture](docs/ARCHITECTURE.md) | Existing Testnet spot book and custody limits |
+| [Contributing](CONTRIBUTING.md) | Validation and secret handling |
+
+Lazer is independently developed and is not affiliated with [LN Markets](https://lnmarkets.com/) or Jane Street. LN Markets is a product reference; no LN Markets private API, account, or execution service is connected.

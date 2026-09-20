@@ -2,6 +2,8 @@
 
 [Back to Lazer](../README.md)
 
+> This guide covers the preserved Testnet 4 pilot at `/legacy`. For the current derivatives rebuild, read [the derivatives specification](DERIVATIVES.md).
+
 ## Network readiness
 
 | Network | Current status |

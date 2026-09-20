@@ -2,6 +2,12 @@
 
 [Back to Lazer](../README.md)
 
+## Derivatives and Lightning milestone
+
+The suite now includes inverse P&L, collateral conservation, price/time matching, partial fills, liquidation scenarios, and offline Lightning/Ark/Liquid inspection. A separate Bitcoin Core/LND regtest run completed a 100,000 sat payment and 15,000 sat return. See [the evidence](evidence/lightning-regtest.json) and [reproduction instructions](DERIVATIVES.md#lightning-regtest-verification). The Lightning test is separate from browser practice balances; Ark and Liquid transfers are not verified.
+
+The historical Testnet and escrow evidence below applies to the legacy tools, not derivatives readiness.
+
 ## Automated checks
 
 Run from the repository root:

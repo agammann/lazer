@@ -2,9 +2,11 @@
 
 [Back to Lazer](../README.md)
 
+> This guide covers the preserved Testnet 4 pilot at `/legacy`. For the current derivatives rebuild, read [the derivatives specification](DERIVATIVES.md).
+
 ## Before you start
 
-Use [the hosted app](https://lazer.alx21.chatgpt.site/) and Bitcoin Core running on **Testnet 4**. Testnet 3, signet, regtest, and mainnet are different networks. A test address alone cannot distinguish Testnet 3 from Testnet 4.
+Use [the hosted app](https://lazer.alx21.chatgpt.site/legacy) and Bitcoin Core running on **Testnet 4**. Testnet 3, signet, regtest, and mainnet are different networks. A test address alone cannot distinguish Testnet 3 from Testnet 4.
 
 Start Bitcoin Core with `-testnet4`, let it synchronize, and create or load a Testnet wallet. Obtain free test coins from a Testnet 4 faucet, such as [coinfaucet.eu](https://coinfaucet.eu/en/btc-testnet4/). Faucet availability and confirmation time vary.
 
