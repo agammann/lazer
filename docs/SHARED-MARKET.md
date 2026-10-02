@@ -14,6 +14,8 @@ Two different people can now trade a BTC/USD test scenario against each other. T
 6. Either participant selects **Settle both sides**. Alice finishes with 1,007,936 practice sats and Bob with 992,064. This bilateral test settlement closes the whole pair, not just one participant's exposure.
 7. Export a snapshot for your records. Reopening or refreshing the room retrieves its authoritative state from the server. Bob should keep the code and use **Join as Bob** to reopen the room; joining again does not reset it.
 
+Use **Sign out** in the Shared test rooms panel to end your signed-in session, even before opening a room. Sign in again to reopen it: Alice chooses **Open my room**, while Bob enters the saved code and chooses **Join as Bob**. Signing out does not reset the room.
+
 The solo terminal at `/` remains useful for testing both roles yourself without signing in. Its browser journal and balances are separate from shared rooms. There is no import into a shared room and no conversion of existing Testnet balances.
 
 ## Consistency and access
