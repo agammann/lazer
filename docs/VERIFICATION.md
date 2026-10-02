@@ -20,11 +20,21 @@ npm test
 npm run build
 ```
 
-The current suite contains 49 checks covering matching, reservations, signing, ownership, concurrency, idempotent retries, Bitcoin escrow, and native ETH payment verification. API tests execute production handlers against local D1 SQL with explicitly substituted authentication and chain fixtures. They do not contact the public chain, load the deployment seed, or establish mainnet readiness.
+The current suite contains 72 checks covering matching, reservations, signing, ownership, concurrency, idempotent retries, Bitcoin escrow, native ETH payment verification, inverse derivatives P&L, collateral conservation, liquidation scenarios, Lightning invoice inspection, and shared-room access and restart recovery. API tests execute production handlers against local D1 SQL with explicitly substituted authentication and chain fixtures. They do not contact the public chain, load the deployment seed, or establish mainnet readiness.
 
 The original public Testnet release had 26 checks. Its historical evidence below retains that count. The separate escrow implementation adds 12 Bitcoin protocol tests and 11 Ethereum verification tests. See the [escrow guide](ESCROW.md) for the Bitcoin Core escrow harness and its recorded regtest evidence.
 
 [GitHub Actions](https://github.com/agammann/lazer/actions/workflows/verify.yml) runs these checks on pushes to main and on pull requests.
+
+## October 2, 2026 browser verification
+
+A fresh checkout of commit `1598851d76e88b0476055b692193300d5fc9b1a4` passed all 71 tests, TypeScript validation, and the production build on Windows with Node.js 24.19.0. The published solo terminal was exercised in an isolated Edge browser: Alice and Bob matched 100 contracts at $60,000 and 2× leverage, reserving 83,334 practice sats each. Moving the scenario price to $63,000 and settling produced balances of 1,007,936 sats for Alice and 992,064 for Bob.
+
+Reload restored the four-command journal. Export and import into a fresh browser context reproduced the balances; an invalid journal was rejected without changing the existing balance. Export and restart saved the prior journal before returning to the initial practice balance. The inspected 1440-, 390-, and 320-pixel layouts had no horizontal overflow. The anonymous shared-room page displayed its sign-in gate.
+
+A local D1 regression reproduced an existing Bob being unable to reopen a room at its 1,000-action limit. The fix permits that existing member to reopen without changing the room, while new joins and mutations remain blocked at capacity. The regression failed before the fix; all 72 tests, TypeScript validation, and the production build passed afterward.
+
+The public-browser pass blocked non-read network requests. It did not sign in to a production shared room, verify two-person production trading, move Testnet funds, or repeat the Bitcoin Core/LND payment harness. The live chain evidence below remains historical; local shared-room tests use fictional identities and do not establish production authentication.
 
 ## Bitcoin Core regtest
 

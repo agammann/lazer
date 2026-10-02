@@ -54,6 +54,21 @@ test('only one different identity can claim Bob under concurrent joins',async()=
   const winner=joins[0].status===200?'bob-user':'outsider';
   assert.equal((await get(room.id,winner)).data.room.trader,'Bob');
 });
+test('full rooms let the existing Bob reopen without accepting new joins or mutations',async()=>{
+  async function fillReceipts(room) {
+    const key='derivatives-room-v1:'+room.id;
+    const saved=await db.prepare('SELECT state FROM exchange_sessions WHERE id=?').bind(key).first();
+    const state=JSON.parse(saved.state);
+    // Seed the capacity boundary without issuing 1000 rate-limited requests.
+    state.receipts=Array.from({length:1000},()=>({id:crypto.randomUUID(),owner:'alice-user',payload:'{}'}));
+    await db.prepare('UPDATE exchange_sessions SET state=? WHERE id=?').bind(JSON.stringify(state),key).run();
+  }
+  const room=await paired();await fillReceipts(room);
+  assert.deepEqual(await ok(command(room,{action:'join'}),'bob-user'),room);
+  const mutation=await post(command(room,order));assert.equal(mutation.status,400);assert.match(mutation.data.error,/room is full/);
+  const unjoined=await ok({action:'create'},'other-creator');await fillReceipts(unjoined);
+  const newcomer=await post(command(unjoined,{action:'join'}),'new-bob');assert.equal(newcomer.status,400);assert.match(newcomer.data.error,/room is full/);
+});
 test('two identities match and settle exact conserved P&L on durable state',async()=>{
   let room=await paired();room=await ok(command(room,order));
   room=await ok(command(room,{...order,side:'short'}),'bob-user');

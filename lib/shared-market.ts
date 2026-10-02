@@ -61,12 +61,13 @@ export async function changeRoom(owner: string, input: Input) {
     const receipt = current.receipts.find(r => r.id === input.requestId && r.owner === owner);
     if (receipt) { if (receipt.payload !== payload) throw new MarketError('Request identifier was reused for another action.'); return view(id, current, owner, saved.revision); }
     if (!Number.isSafeInteger(input.issuedAt) || Math.abs(Date.now() - Number(input.issuedAt)) > 300000) throw new MarketError('Request expired. Refresh the room and try again.');
+    // Reopening existing membership does not consume room capacity.
+    if (input.action === 'join' && current.bob === owner) return view(id, current, owner, saved.revision);
     if (current.receipts.length >= 1000) throw new MarketError('This bounded test room is full. Export its journal; continue scenarios in solo practice.');
     const next: Room = structuredClone(current);
     if (input.action === 'join') {
       if (current.alice === owner) throw new MarketError('A second signed-in person must join as Bob.');
       if (current.bob && current.bob !== owner) throw new MarketError('Room unavailable for this account.', 403);
-      if (current.bob === owner) return view(id, current, owner, saved.revision);
       next.bob = owner;
     } else {
       const trader = role(current, owner); if (!trader) throw new MarketError('Room unavailable for this account.', 403);
