@@ -106,8 +106,13 @@ test('accepted commands and membership survive an actual database runtime restar
   assert.equal((await ok(input)).revision,room.revision);
   assert.equal((await ok({action:'create'})).id,room.id);
 });
-test('write throttling limits room creation abuse',async()=>{
+test('write throttling limits room creation abuse',async(t)=>{
+  let now=Date.UTC(2026,9,2,12);
+  t.mock.method(Date,'now',()=>now);
   for(let i=0;i<30;i++) assert.equal((await post({action:'create'})).status,200);
   assert.equal((await post({action:'create'})).status,429);
+  now+=60000;
+  assert.equal((await post({action:'create'})).status,200);
+  assert.equal((await db.prepare("SELECT count FROM request_limits WHERE id LIKE 'derivatives-write:%'").first()).count,1);
   assert.equal((await db.prepare("SELECT count(*) as total FROM exchange_sessions WHERE id LIKE 'derivatives-room-v1:%'").first()).total,1);
 });
