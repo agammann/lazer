@@ -6,7 +6,7 @@
 
 The suite now includes inverse P&L, collateral conservation, price/time matching, partial fills, liquidation scenarios, and offline Lightning invoice inspection. A separate Bitcoin Core/LND regtest run completed a 100,000 sat payment and 15,000 sat return. See [the evidence](evidence/lightning-regtest.json) and [reproduction instructions](DERIVATIVES.md#lightning-regtest-verification). The Lightning test is separate from browser practice balances.
 
-Shared-market tests now exercise real local D1 SQL and the production route handlers: separate fictional identities, racing joins/orders, duplicate and stale commands, exact P&L, ownership, rate limits, and state recovery after a database-runtime restart. See [shared rooms](SHARED-MARKET.md). Production two-person authentication still requires separate user accounts.
+Shared-market tests now exercise real local D1 SQL and the production route handlers: separate fictional identities, racing joins/orders, duplicate and stale commands, exact P&L, ownership, rate limits, and state recovery after a database-runtime restart. See [shared rooms](SHARED-MARKET.md). Distinct-account production Sign in with ChatGPT, matching and settlement remain unverified.
 
 The historical Testnet and escrow evidence below applies to the legacy tools, not derivatives readiness.
 
@@ -37,6 +37,14 @@ A local D1 regression reproduced an existing Bob being unable to reopen a room a
 The public-browser pass blocked non-read network requests. A follow-up against published version 10 repeated settlement, reload, the anonymous sign-in gate, and the three viewport checks successfully, with no page runtime errors. It did not sign in to a production shared room, verify two-person production trading, or move Testnet funds. Local shared-room tests use fictional identities and do not establish production authentication.
 
 A separate [isolated shared-room browser check](verification/shared-room-browser-2026-10-02.json) passed 16 checks using the production page component and API handlers, separate browser sessions with controlled test identities, and fresh local D1 storage. It covered joining, matching, exact settlement, export, persistence after a database runtime restart, ownership, room isolation, and concurrent retries. The same check reproduced and verified fixes for a cramped room-code field at tablet widths and low-contrast sign-in text; layouts were checked at 1440, 797, 650, 390, and 320 pixels. This does not close the separate production two-account Sign in with ChatGPT verification gap.
+
+### Production sign-in and native WebMCP follow-up
+
+On October 2, one real ChatGPT account was tested in normal and private Chrome windows. Both reopened the same saved room as Alice, and joining that room as Bob was rejected. A 100-contract long order at $60,000 and 2× leverage reserved 83,334 practice sats; both sessions displayed the same order and revision. On published version 12, **Sign out** returned the private window to the anonymous page while the original window remained signed in. Canceling from the original window restored 1,000,000 available sats and zero reserved sats; reload preserved the room, role, journal and balance. Sign-out followed by sign-in also restored the saved room, and a downloaded snapshot matched its visible balance and journal.
+
+Six read-only checks also passed on the published anonymous `/legacy` page in Edge 154 with native WebMCP enabled. The browser registered and executed `read_lazer`; its result matched the public exchange API, unexpected arguments were rejected, and navigating to shared rooms removed the tool. No browser API was replaced or polyfilled, no application mutations or page runtime errors were observed, and the wallet was untouched.
+
+These production checks cover one account across two sessions and an anonymous native read tool. They do not establish distinct-account production authentication, cross-account isolation, or two-person matching and settlement. Those multi-identity scenarios retain the separate local D1 and 16-check browser evidence above.
 
 ## October 2, 2026 local chain verification
 

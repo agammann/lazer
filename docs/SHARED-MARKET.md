@@ -36,6 +36,8 @@ Production identity comes from the Sites authentication gateway through `app/cha
 
 Run `npm test` to exercise the actual route handlers against local D1 SQL. Shared-market tests cover identity isolation, competing joins, exact settlement, duplicate requests, stale commands, cancellation ownership, rate limits, and reopening the same database after disposing and recreating its runtime. This is local integration evidence; it does not substitute for a two-person production sign-in test.
 
+The October 2 production follow-up verified one real account in two Chrome sessions: both remained Alice, shared order changes, and preserved the room after cancellation and reload. Signing out of the private window left the original session signed in. Distinct-account production authentication and trading remain unverified; see the [production verification scope](VERIFICATION.md#production-sign-in-and-native-webmcp-follow-up).
+
 ## Lightning boundary
 
 Lightning is Lazer's only planned funding network. The Bitcoin Core/LND regtest payment harness remains available and its previous successful payment evidence is retained. These shared rooms are deliberately unfunded: there is no deposit endpoint, withdraw endpoint, fake payment confirmation, or mainnet switch.

@@ -10,6 +10,8 @@ An independent Bitcoin derivatives project. Trade BTC/USD exposure, post collate
 
 [Open shared test rooms](https://lazer.alx21.chatgpt.site/market). Sign in, choose **Open my room**, and give your room code to a second person. They sign in separately and choose **Join as Bob**. Orders, balances and the room journal are saved on the server. Read the [shared-room walkthrough](docs/SHARED-MARKET.md).
 
+Production sign-in, synchronization between two sessions of one account, sign-out, cancellation and reload were verified on October 2, 2026. Trading between two distinct production accounts remains unverified; see the [tested scope](docs/VERIFICATION.md#production-sign-in-and-native-webmcp-follow-up).
+
 ## Try the solo derivatives lab
 
 1. As Alice, place a **Long** at $60,000 with 100 contracts and 2× leverage.
