@@ -34,7 +34,17 @@ Reload restored the four-command journal. Export and import into a fresh browser
 
 A local D1 regression reproduced an existing Bob being unable to reopen a room at its 1,000-action limit. The fix permits that existing member to reopen without changing the room, while new joins and mutations remain blocked at capacity. The regression failed before the fix; all 72 tests, TypeScript validation, and the production build passed afterward.
 
-The public-browser pass blocked non-read network requests. It did not sign in to a production shared room, verify two-person production trading, move Testnet funds, or repeat the Bitcoin Core/LND payment harness. The live chain evidence below remains historical; local shared-room tests use fictional identities and do not establish production authentication.
+The public-browser pass blocked non-read network requests. A follow-up against published version 10 repeated settlement, reload, the anonymous sign-in gate, and the three viewport checks successfully, with no page runtime errors. It did not sign in to a production shared room, verify two-person production trading, or move Testnet funds. Local shared-room tests use fictional identities and do not establish production authentication.
+
+## October 2, 2026 local chain verification
+
+Three separate integration checks passed against Bitcoin Core 31.1 on fresh, isolated regtest chains. Lightning used two LND 0.21.3-beta wallets. The application source was commit `681ba0f28d104ccf2a8eb7fcfb4e943dffbe69a4`.
+
+- [Deposit, trade and withdrawal](evidence/regtest-2026-10-02.json): deposit 200,000 sats, match a 20,000-sat trade, then sign and broadcast a 15,000-sat withdrawal. Core accepted it and the receiving wallet confirmed the exact amount after six blocks.
+- [Two-signature escrow](evidence/escrow-regtest-2026-10-02.json): seller/buyer release and seller/arbitrator refund each paid 100,000 sats after six confirmations. The operator alone could not finalize either settlement. The refund also exercised the command-line create, inspect, prepare and combine flow.
+- [Lightning payment and return](evidence/lightning-regtest-2026-10-02.json): a 100,000-sat payment and a 15,000-sat return both reached `SUCCEEDED` at the sender and `SETTLED` at the receiver, leaving 85,000 sats at the receiving node.
+
+The test processes shut down after completion. These checks used local regtest coins and a direct Lightning channel. They do not establish public routing, production custody, or a connection between Lightning payments and the practice-room ledger. The public Testnet round-trip evidence below remains historical.
 
 ## Bitcoin Core regtest
 

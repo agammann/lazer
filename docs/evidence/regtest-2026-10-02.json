@@ -1,0 +1,26 @@
+{
+  "network": "regtest",
+  "test": "Bitcoin Core deposit, Alice sell, Bob buy, signed withdrawal, Core receipt",
+  "deposit": {
+    "txid": "f434ca5c205b89899b0ef943a9a9f36cc4962fede505f8e5178dbca0ef6ddad2",
+    "sats": 200000,
+    "confirmations": 6
+  },
+  "trade": {
+    "sats": 20000,
+    "priceDUSD": 60000
+  },
+  "withdrawal": {
+    "txid": "191cc8009f4803e094220664cf8549113c347bbcc81acb8292840c91227aea2d",
+    "sats": 15000,
+    "fee": 143,
+    "confirmations": 6
+  },
+  "mempoolAccepted": true,
+  "balances": {
+    "alice": 180000,
+    "bob": 4857
+  },
+  "passed": true,
+  "checkedAt": "2026-10-02T10:37:58.236Z"
+}

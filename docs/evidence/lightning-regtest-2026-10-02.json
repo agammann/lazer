@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-02T10:37:38.792Z",
+  "network": "regtest",
+  "coreVersion": "/Satoshi:31.1.0/",
+  "lndVersion": "0.21.3-beta commit=v0.21.3-beta",
+  "channelFundingTxid": "34fecfaea0cb1f40d11adac71663a9db5cff305d7dcefde670d93d7e36464f35",
+  "deposit": {
+    "paymentHash": "55e3d535f9fc7165b471045d493fcfd8eb398ffa8c014b7099ae5096ed85e823",
+    "sats": 100000,
+    "senderStatus": "SUCCEEDED",
+    "receiverState": "SETTLED",
+    "feeSats": 0
+  },
+  "withdrawal": {
+    "paymentHash": "3b9d45f82644e36befe62d57f399893cc36f4a3ea2cb0a33b8b4e5b7ff839955",
+    "sats": 15000,
+    "senderStatus": "SUCCEEDED",
+    "receiverState": "SETTLED",
+    "feeSats": 0
+  },
+  "remainingAtLazerSats": 85000,
+  "limits": [
+    "Local regtest only; no valuable Bitcoin moved.",
+    "Direct channel; no public routing or liquidity reliability claim.",
+    "Lightning proof is separate from the practice trading ledger."
+  ]
+}
