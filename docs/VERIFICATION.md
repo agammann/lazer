@@ -36,6 +36,8 @@ A local D1 regression reproduced an existing Bob being unable to reopen a room a
 
 The public-browser pass blocked non-read network requests. A follow-up against published version 10 repeated settlement, reload, the anonymous sign-in gate, and the three viewport checks successfully, with no page runtime errors. It did not sign in to a production shared room, verify two-person production trading, or move Testnet funds. Local shared-room tests use fictional identities and do not establish production authentication.
 
+A separate [isolated shared-room browser check](verification/shared-room-browser-2026-10-02.json) passed 16 checks using the production page component and API handlers, separate browser sessions with controlled test identities, and fresh local D1 storage. It covered joining, matching, exact settlement, export, persistence after a database runtime restart, ownership, room isolation, and concurrent retries. The same check reproduced and verified fixes for a cramped room-code field at tablet widths and low-contrast sign-in text; layouts were checked at 1440, 797, 650, 390, and 320 pixels. This does not close the separate production two-account Sign in with ChatGPT verification gap.
+
 ## October 2, 2026 local chain verification
 
 Three separate integration checks passed against Bitcoin Core 31.1 on fresh, isolated regtest chains. Lightning used two LND 0.21.3-beta wallets. The application source was commit `681ba0f28d104ccf2a8eb7fcfb4e943dffbe69a4`.

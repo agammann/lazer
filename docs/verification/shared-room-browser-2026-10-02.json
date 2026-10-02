@@ -1,0 +1,165 @@
+{
+  "checkedAt": "2026-10-02T22:50:12.223Z",
+  "result": "passed",
+  "scope": "The production SharedMarket React component and derivatives API handler were bundled from source for isolated browser verification. Separate browser cookie jars used server-issued opaque test sessions for fictional identities. The API used the repository test-only identity seam with a fresh real Miniflare D1 database bound to loopback. Production credentials, identity headers and storage were not used.",
+  "coverageBoundary": "This verifies rendered component behavior and room persistence/authorization under controlled identities. It does not verify Sites Sign in with ChatGPT, deployment routing, or a two-account production session.",
+  "environment": {
+    "os": "Windows",
+    "node": "v24.19.0",
+    "browser": "Microsoft Edge 154.0.4258.48",
+    "playwright": "1.63.0",
+    "binding": "127.0.0.1",
+    "sourceBaseCommit": "79717dea6b4ab7df2218f580cb21ec527a75f0c5"
+  },
+  "sourceSha256": {
+    "app/market/page.tsx": "4dc3c825b0bc0a89874be5dc8588f1d814b823602fd2d711e6c621d089e6b0c4",
+    "app/market/shared.css": "94cfafd7a76cd334b6554fb3c38a8fa3c3da28eb898396412e91e2951b8411a7",
+    "app/practice.css": "21ddc1fa52fe2db0c5e42548c2fa3edd97a2ae88c814c8a9c48f8fb69ccff74a",
+    "components/practice-chart.tsx": "aeb10cfe7afab89a5407edab22c2ad8eecd62b2cce682a7bb000f81701c0247f",
+    "app/api/derivatives/route.ts": "35be840521333109fd6a8428a8178f7b1b6d4816bceb1696aff9865268522729",
+    "lib/shared-market.ts": "804eeb71809b1efa5d5bf5902f5914dec57749a47c392024a7615587ae32239b",
+    "lib/derivatives.ts": "3ad0f3a824e91d295d1825203f53fb08f5af3ccd6d9c0321092166dd7aabf062",
+    "tests/fixtures/runtime.mjs": "2ce425afeee37894a3ebc39e58a2313d630e5eb86d50f59d9198f6fc9ee35bc8",
+    "drizzle/0000_abnormal_dragon_lord.sql": "196ec857cb4d667068ee61ad699f2269082a2eeaa9c1be7dc04c3cc61ff95685",
+    "drizzle/0001_overconfident_doctor_doom.sql": "aa6897c26629488a91a2da4903a0a978c3525e263cbd6202d6b69061c2e4d2cb"
+  },
+  "assertions": [
+    "Anonymous session cannot access room API",
+    "Intended page renders meaningful content without an overlay",
+    "Alice creates a durable practice room via UI",
+    "Separate Bob session joins and both UIs see participants",
+    "Creator cannot become Bob; unrelated identity cannot read or claim full room",
+    "Two browser participants match real engine orders and reserve exact margin",
+    "Bob scenario control is disabled and server rejects direct attempt without mutation",
+    "Creator advances price and Bob settles both sides with conserved exact P&L",
+    "Browser downloads exact saved settlement snapshot",
+    "Reload and existing Bob rejoin preserve settled room",
+    "Real D1 runtime restart preserves both accounts and entire settlement journal",
+    "Only order owner can cancel; margin is fully released",
+    "Concurrent duplicate browser requests have one effect; stale independent command returns 409",
+    "Unrelated creator gets an isolated fresh room and cross-room reads remain denied",
+    "No JavaScript exceptions, failed transports or external requests during tested flows",
+    "Room-code field remains usable at five widths and sign-in contrast exceeds 4.5:1"
+  ],
+  "settlement": {
+    "startingBalancesSats": {
+      "Alice": 1000000,
+      "Bob": 1000000
+    },
+    "entryUsd": 60000,
+    "contractsUsd": 100,
+    "leverage": 2,
+    "marginPerParticipantSats": 83334,
+    "settlementUsd": 63000,
+    "finalBalancesSats": {
+      "Alice": 1007936,
+      "Bob": 992064
+    },
+    "conservedTotalSats": 2000000,
+    "exportMatchedEntireSavedMarket": true,
+    "d1RuntimeRestartPreservedEntireSavedMarket": true
+  },
+  "concurrency": {
+    "simultaneousIdenticalRequests": 2,
+    "successfulResponses": 2,
+    "committedEffects": 1,
+    "revisionIncrement": 1,
+    "staleIndependentCommandStatus": 409
+  },
+  "diagnostics": {
+    "pageExceptions": 0,
+    "failedTransports": 0,
+    "expectedConsoleHttpDenials": {
+      "400": 2,
+      "401": 2,
+      "403": 4,
+      "409": 1
+    },
+    "unexpectedConsoleErrors": 0
+  },
+  "layout": {
+    "joinFieldWidthAt797px": {
+      "before": 42.859375,
+      "after": 601.828125
+    },
+    "testedAfter": [
+      {
+        "viewportWidth": 1440,
+        "inputWidth": 685.859375,
+        "horizontalPageOverflow": false
+      },
+      {
+        "viewportWidth": 797,
+        "inputWidth": 601.828125,
+        "horizontalPageOverflow": false
+      },
+      {
+        "viewportWidth": 650,
+        "inputWidth": 584,
+        "horizontalPageOverflow": false
+      },
+      {
+        "viewportWidth": 390,
+        "inputWidth": 324,
+        "horizontalPageOverflow": false
+      },
+      {
+        "viewportWidth": 320,
+        "inputWidth": 254,
+        "horizontalPageOverflow": false
+      }
+    ],
+    "signInButton": {
+      "before": {
+        "color": "rgb(143, 237, 255)",
+        "backgroundColor": "rgb(166, 251, 102)",
+        "fontSize": "14px",
+        "contrast": 1.0563749150369808
+      },
+      "after": {
+        "color": "rgb(8, 17, 7)",
+        "backgroundColor": "rgb(166, 251, 102)",
+        "fontSize": "14px",
+        "contrast": 15.19070247275401
+      }
+    }
+  },
+  "requiredChecks": {
+    "typecheck": {
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "equivalentPackageScript": "npm run typecheck",
+      "exitCode": 0
+    },
+    "tests": {
+      "command": "node scripts/test.mjs",
+      "equivalentPackageScript": "npm test",
+      "passed": 72,
+      "failed": 0,
+      "exitCode": 0
+    },
+    "build": {
+      "command": "node scripts/run-framework.mjs build",
+      "equivalentPackageScript": "npm run build",
+      "exitCode": 0,
+      "notice": "vinext reported that static route classification is incomplete; build completed."
+    }
+  },
+  "screenshots": [
+    {
+      "file": "shared-room-browser-2026-10-02-join-before.png",
+      "sha256": "e78e4cb331a212a55c0942ebe4db1e85ce83dc87c1ae4e4d9670b7bd8b9b089f"
+    },
+    {
+      "file": "shared-room-browser-2026-10-02-join-after.png",
+      "sha256": "2c01cd7b98ed8730205cb70cbb999ac1b86da85608801210a993e901559b2cef"
+    },
+    {
+      "file": "shared-room-browser-2026-10-02-sign-in-before.png",
+      "sha256": "56fe1f789b23616320b985b545f61b86f722b45961ce7046b157c6d17d552f00"
+    },
+    {
+      "file": "shared-room-browser-2026-10-02-sign-in-after.png",
+      "sha256": "fe40a32bf8c6ab01bfa1798f498770dd85e72d24cf5203cb41b41acf01cddfa2"
+    }
+  ]
+}
