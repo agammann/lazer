@@ -101,6 +101,8 @@ try {
   await blocked.getByRole('button',{name:'Place practice long',exact:true}).click();assert.equal((await journal(blocked)).commands.length,1);
   check('Failed storage write preserves balances and a retry works after storage recovery');
   for(const finished of [page,other,corrupt,blocked])await finished.context().close();
+  await browser.close();
+  browser=await chromium.launch({headless:true,args:['--enable-features=WebMCPTesting'],...(process.env.LAZER_BROWSER_CHANNEL?{channel:process.env.LAZER_BROWSER_CHANNEL}:{})});
   const legacy=await pageFor();const exchange=legacy.waitForResponse(r=>new URL(r.url()).pathname==='/api/exchange'&&r.request().method()==='GET');
   await legacy.goto(origin+'/legacy',{waitUntil:'domcontentloaded'});const response=await exchange;assert.equal(response.status(),200);const expected=await response.json();assert.equal(expected.authenticated,false);
   await legacy.waitForFunction(async()=>typeof document.modelContext?.getTools==='function'&&(await document.modelContext.getTools()).some(t=>t.name==='read_lazer'));
