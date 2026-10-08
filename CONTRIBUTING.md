@@ -6,7 +6,7 @@ Start with [local development](docs/DEVELOPMENT.md). Use a separate local wallet
 
 ## Changes and validation
 
-Keep changes focused and explain the user visible problem, resulting behavior, and verification in the pull request. Run `npm run typecheck`, `npm test`, and `npm run build` before requesting review.
+Keep changes focused and explain the user visible problem, resulting behavior, and verification in the pull request. Use Node.js 24.19.0 and npm 12.2.0. Run `npm run check` before requesting review; install Chromium with `npx playwright install chromium` first. Browser suites use fresh local databases and explicit test identities.
 
 Changes to balances, matching, deposit confirmation, signing, or retry behavior need tests for the relevant failure and concurrent request cases. The API fixture suite is separate from Bitcoin Core and public Testnet verification. State which checks you actually ran.
 
@@ -26,4 +26,4 @@ For a suspected exploitable security issue, use GitHub's private vulnerability r
 
 Commit source, the lockfile, documentation, and intentional public verification evidence. Keep `.dev.vars`, `.env*`, node data, generated builds, local state, and temporary files ignored. The tracked `.dev.vars.example` is a placeholder, never a usable secret.
 
-Preserve upstream license files under `build/` and `vendor/`. Public repository visibility does not itself establish an additional project license.
+Preserve upstream license files under `build/` and `vendor/`. The project is MIT licensed; retain its license and those upstream notices.

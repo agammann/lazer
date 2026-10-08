@@ -1,7 +1,7 @@
 import { before, after, beforeEach, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { Miniflare } from 'miniflare';
+import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { Transaction } from 'bitcoinjs-lib';
 import { env, identities } from './fixtures/runtime.mjs';
 import { GET, POST } from '../work/exchange-route.mjs';
@@ -14,7 +14,7 @@ const origin = 'https://lazer.test';
 let mf, db, confirmations, broadcastCount, transactions, spent, hideBroadcast;
 const originalFetch = globalThis.fetch;
 before(async () => {
-  mf = new Miniflare({ modules: true, script: 'export default { fetch() { return new Response("test"); } }', d1Databases: ['DB'] });
+  mf = new Miniflare(convertV4MiniflareOptions({ modules: true, script: 'export default { fetch() { return new Response("test"); } }', d1Databases: ['DB'] }));
   db = await mf.getD1Database('DB'); env.DB = db; env.TESTNET_WALLET_SEED = seed;
   globalThis.fetch = async (url, init = {}) => {
     assert.ok(String(url).startsWith('https://mempool.space/testnet4/api/'), 'Tests cannot call external services');

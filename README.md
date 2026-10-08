@@ -1,10 +1,10 @@
 # Lazer
 
-An independent Bitcoin derivatives project. Trade BTC/USD exposure, post collateral in sats, and settle profit or loss in sats. Lightning is the sole planned funding and withdrawal network.
+A Bitcoin derivatives practice app and developer starter. Explore limit orders, satoshi margin, inverse profit and loss, and journal replay with Alice and Bob. Practice balances have no withdrawal value.
 
 [Open Lazer](https://lazer.alx21.chatgpt.site/) · [Build specification](docs/DERIVATIVES.md) · [Verification workflow](https://github.com/agammann/lazer/actions/workflows/verify.yml)
 
-**Current milestone: a solo practice terminal and server-saved shared test rooms, plus separately verified local Lightning payments. This is not a funded derivatives venue.** Shared rooms let two signed-in people trade as Alice and Bob. All derivatives balances are practice sats and cannot be withdrawn.
+**v1.0.0 includes a solo practice terminal, server-saved shared test rooms, and reproducible local protocol harnesses.** Shared rooms let two signed-in people trade as Alice and Bob. All derivatives balances are practice sats and cannot be withdrawn.
 
 ## Trade with another person
 
@@ -37,21 +37,25 @@ See [Lightning payment evidence](docs/evidence/lightning-regtest.json) and the [
 
 ## Run locally
 
-Use Node.js 22.13 or later and npm:
+Use Node.js 24.19.0 (24.x) and npm 12.2.0. Download the [v1.0.0 source release](https://github.com/agammann/lazer/releases/tag/v1.0.0) or clone the repository:
 
 ```sh
 git clone https://github.com/agammann/lazer.git
 cd lazer
+npm install --global npm@12.2.0
 npm ci
 npm run dev
 ```
 
-Open the URL printed by the dev server. The derivatives lab needs no wallet seed or API keys. Read [local development](docs/DEVELOPMENT.md) for legacy Testnet wallet setup.
+Open the URL printed by the dev server. The derivatives lab needs no wallet seed or API keys. To use local shared rooms and the preserved Testnet wallet, run `npm run build` and `npm run setup:local` before starting the server. Read [local development](docs/DEVELOPMENT.md) for setup, stopped backups and recovery.
 
 ```sh
 npm run typecheck
 npm test
 npm run build
+npx playwright install chromium
+npm run test:browser:local
+npm run test:browser:shared
 ```
 
 For actual local Lightning payment verification, install Bitcoin Core and LND, then follow [the regtest instructions](docs/DERIVATIVES.md#lightning-regtest-verification). No mainnet funds are needed.
@@ -74,5 +78,10 @@ The intended additions are clear risk previews, a replayable trading journal, an
 | [Verification](docs/VERIFICATION.md) | Checks and recorded evidence |
 | [Legacy architecture](docs/ARCHITECTURE.md) | Existing Testnet spot book and custody limits |
 | [Contributing](CONTRIBUTING.md) | Validation and secret handling |
+| [Release and support](docs/RELEASE.md) | Source checksums, upgrades, recovery and bug reports |
 
 Lazer is independently developed and is not affiliated with [LN Markets](https://lnmarkets.com/) or Jane Street. LN Markets is a product reference; no LN Markets private API, account, or execution service is connected.
+
+## License
+
+Lazer is available under the [MIT license](LICENSE). Retain the bundled upstream license notices when redistributing it.

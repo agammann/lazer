@@ -1,0 +1,15 @@
+import { execFileSync } from 'node:child_process';
+import { resolve } from 'node:path';
+const directory=resolve(process.argv.slice(2).find(v=>v!=='--') || 'consumer-output/fresh');
+const source=execFileSync(process.env.LAZER_PYTHON || 'python',['scripts/unpack-release.py',directory],{encoding:'utf8',windowsHide:true}).trim();
+const cli=process.env.LAZER_NPM || process.env.npm_execpath;
+if(!cli)throw Error('Run this check with npm run test:consumer.');
+if(process.versions.node!=='24.19.0')throw Error('Consumer verification requires Node.js 24.19.0.');
+const npm=(args)=>execFileSync(process.execPath,[cli,...args],{cwd:source,stdio:'inherit',windowsHide:true});
+if(execFileSync(process.execPath,[cli,'--version'],{encoding:'utf8',windowsHide:true}).trim()!=='12.2.0')throw Error('Consumer verification requires npm 12.2.0.');
+npm(['ci']);
+npm(['exec','--','playwright','install','chromium']);
+npm(['run','check']);
+npm(['run','setup:local']);
+npm(['run','setup:local']);
+console.log('Fresh Lazer source consumer passed locked install, types, 72 engine/API checks, production build, real framework/browser recovery, native WebMCP, controlled shared identities and repeat local setup.');
