@@ -8,13 +8,14 @@ See [the derivatives guide](DERIVATIVES.md) for the Lightning harness and fundin
 
 ## Prerequisites
 
-Use Git, Node.js 22.13 or later, and npm. CI uses Node.js 22. Bitcoin Core is optional for the local UI and automated suite, and required for the separate node integration checks.
+Use Git, Node.js 24.19.0 within 24.x, and npm 12.2.0. CI pins those exact versions. Bitcoin Core is optional for the local UI and automated suite, and required for the separate node integration checks.
 
 Run every command below from the repository root. The commands work in PowerShell and typical Unix shells unless labeled otherwise.
 
 ```sh
 git clone https://github.com/agammann/lazer.git
 cd lazer
+npm install --global npm@12.2.0
 npm ci
 ```
 
@@ -36,14 +37,13 @@ The seed must be 64 hexadecimal characters. Each independent deployment needs it
 
 ```sh
 npm run build
-node --import ./scripts/sites-env.mjs node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --file drizzle/0000_abnormal_dragon_lord.sql --persist-to .wrangler/state
-node --import ./scripts/sites-env.mjs node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --file drizzle/0001_overconfident_doctor_doom.sql --persist-to .wrangler/state
+npm run setup:local
 npm run dev
 ```
 
-Apply those two SQL files once, in that order, to a fresh local database. They are initialization commands, not an idempotent migration runner. An existing table error means you must inspect the current schema rather than delete data and repeat the setup. Subsequent starts normally require only `npm run dev`.
+`setup:local` creates a private seed only if none exists, initializes both unchanged migrations in a fresh local database, and preserves a complete existing schema. A partial schema stops setup for inspection; it is never deleted or reset. Subsequent starts normally require only `npm run dev`. The earlier manual SQL commands still work when initializing a fresh database, but are not idempotent.
 
-Open the loopback URL printed by the server, normally `http://localhost:5173`. Sign in using the app's sign in link, then open Alice and Bob. The portable local server supplies a development identity. Hosted Sites supplies real ChatGPT identity through its dispatcher. Local balances and hosted balances are separate.
+Open `http://127.0.0.1:5173`. The solo lab needs no sign-in. Shared rooms and the legacy wallet use the app's sign-in link. The portable local server supplies a development identity. Hosted Sites supplies real ChatGPT identity through its dispatcher. Local balances and hosted balances are separate.
 
 Keep the local server bound to loopback. Do not publish it through a tunnel or treat the development identity as production authentication.
 
@@ -65,7 +65,12 @@ Required checks before publication:
 npm run typecheck
 npm test
 npm run build
+npx playwright install chromium
+npm run test:browser:local
+npm run test:browser:shared
 ```
+
+The local browser suite runs the actual framework with a fresh database. The shared-room browser suite bundles the production component and request handlers with the existing test-only identity seam, fictional Alice/Bob/outsider identities and real persistent D1. It runs only on loopback. The framework suite also exercises the browser's native WebMCP API with its testing feature enabled; it installs no polyfill.
 
 The automated suite does not require faucet coins or a live Bitcoin node. For the separate Bitcoin Core integration, see [verification](VERIFICATION.md).
 
@@ -77,6 +82,14 @@ The automated suite does not require faucet coins or a live Bitcoin node. For th
 | Missing SQL table | Check that both migrations ran against the same `.wrangler/state` used by the server. |
 | Invalid or missing wallet seed | Check the ignored `.dev.vars` file and restart the server. Never paste its contents into an issue. |
 | Sign in stays anonymous | Use `npm run dev` on localhost. The built Worker preview does not provide the portable development sign in middleware. |
-| Port 5173 is occupied | Stop the conflicting development process, or use the URL printed for an available port. |
+| Port 5173 is occupied | Use `npm run dev -- --port 5174`; the server remains on loopback and refuses to silently select another port. |
 
 Generated bundles, local database files, execution profiles, and test evidence under `work/` stay out of source control.
+
+## Local backup and recovery
+
+Stop the dev server before copying `.wrangler/state` and `.dev.vars` together into a private backup directory. Do not commit or upload them. An exported shared-room snapshot is useful for inspection, but cannot restore the server database. Export solo journals from the Journal tab before closing the tab.
+
+Restore into a separate checkout running the same version: install its dependencies, copy the stopped database directory and exact seed to their original relative paths, build, run `npm run setup:local` to inspect the schema, then start the server and confirm the room and wallet records. Keep the original backup until verification succeeds. A different local database directory can be selected with `LAZER_LOCAL_STATE`; use the same value for setup and development. Hosted custody recovery needs the operator procedure in [deployment](DEPLOYMENT.md), including reconciliation with later chain activity.
+
+For an upgrade, export the solo journal and take a stopped database/seed backup first. Extract the next release into a new directory and read its changelog before restoring state. v1.0.0 preserves both existing SQL migrations and wallet derivation. To roll back, use the prior source and its matching pre-upgrade state after reconciling any later transactions; never replace a seed to silence an error.

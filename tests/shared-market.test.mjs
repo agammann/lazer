@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import { readFileSync, mkdtempSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { Miniflare } from 'miniflare';
+import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { env, identities } from './fixtures/runtime.mjs';
 import { GET, POST } from '../work/derivatives-route.mjs';
 // Short temporary path avoids Windows SQLite's path limit in deeply nested checkouts.
 const origin = 'https://lazer.test', persist = mkdtempSync(join(tmpdir(), 'lazer-d1-'));
 let mf, db;
 async function start() {
-  mf = new Miniflare({ modules:true, script:'export default { fetch(){return new Response("test")} }', d1Databases:['DB'], d1Persist:persist });
+  mf = new Miniflare(convertV4MiniflareOptions({ modules:true, script:'export default { fetch(){return new Response("test")} }', d1Databases:['DB'], resourcePersistencePath:persist }));
   db = await mf.getD1Database('DB'); env.DB = db;
 }
 before(start); after(async()=>mf?.dispose());

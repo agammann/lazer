@@ -27,7 +27,8 @@ export default function Home() {
     setReady(true);
   }, []);
   function persist(next: Practice, history: Command[]) {
-    sessionStorage.setItem(KEY, JSON.stringify({ version: 1, commands: history }));
+    try { sessionStorage.setItem(KEY, JSON.stringify({ version: 1, commands: history })); }
+    catch { throw Error('Browser storage is unavailable. Your balances are unchanged. Allow session storage or free space, then retry.'); }
     latest.current = { state: next, commands: history }; setState(next); setCommands(history);
   }
   function act(command: Command) {

@@ -1,9 +1,10 @@
 {
   "name": "lazer",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=24.19.0 <25",
+    "npm": "12.2.0"
   },
   "scripts": {
     "install:ci": "node scripts/install-ci.mjs",
@@ -17,64 +18,90 @@
     "escrow": "node scripts/escrow-cli.mjs",
     "funding:inspect": "node scripts/funding-inspect.mjs",
     "test:lightning:core": "node scripts/lightning-regtest.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "setup:local": "node scripts/init-local.mjs",
+    "test:browser:local": "node scripts/test-browser-local.mjs",
+    "test:browser:shared": "node scripts/test-browser-shared.mjs",
+    "check": "npm run typecheck && npm test && npm run build && npm run test:browser:local && npm run test:browser:shared",
+    "package:release": "node scripts/package-release.mjs",
+    "test:consumer": "node scripts/consumer-check.mjs"
   },
   "dependencies": {
-    "@base-ui/react": "^1.7.0",
-    "@bitcoinerlab/secp256k1": "^1.2.0",
-    "@hookform/resolvers": "^5.7.1",
-    "@shadcn/react": "^0.3.0",
-    "bitcoinjs-lib": "^7.0.1",
+    "@base-ui/react": "1.8.0",
+    "@bitcoinerlab/secp256k1": "1.2.0",
+    "@hookform/resolvers": "5.9.1",
+    "@shadcn/react": "0.3.1",
+    "bitcoinjs-lib": "7.0.2",
     "bolt11": "1.4.1",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "cmdk": "^1.1.1",
-    "date-fns": "^4.4.0",
-    "drizzle-orm": "0.45.2",
+    "cmdk": "1.1.1",
+    "date-fns": "4.4.0",
+    "drizzle-orm": "0.45.3",
     "ecpair": "3.0.2",
-    "embla-carousel-react": "^8.6.0",
-    "input-otp": "^1.4.2",
-    "lucide-react": "^1.31.0",
-    "next": "16.3.4",
-    "next-themes": "^0.4.6",
-    "qrcode": "^1.5.4",
-    "radix-ui": "^1.6.7",
-    "react": "19.2.6",
-    "react-day-picker": "^10.0.1",
-    "react-dom": "19.2.6",
-    "react-hook-form": "^7.85.0",
-    "react-resizable-panels": "^4.12.2",
-    "recharts": "^3.8.0",
-    "sonner": "^2.0.8",
-    "tailwind-merge": "3.6.0",
-    "vaul": "^1.1.2",
-    "zod": "^3.25.76"
+    "embla-carousel-react": "8.6.0",
+    "input-otp": "1.5.0",
+    "lucide-react": "1.53.0",
+    "next": "16.4.0",
+    "next-themes": "0.4.6",
+    "qrcode": "1.5.4",
+    "radix-ui": "1.7.0",
+    "react": "19.3.0",
+    "react-day-picker": "10.0.2",
+    "react-dom": "19.3.0",
+    "react-hook-form": "7.89.0",
+    "react-resizable-panels": "4.14.3",
+    "recharts": "3.10.1",
+    "sonner": "2.0.8",
+    "tailwind-merge": "3.7.0",
+    "vaul": "1.1.2",
+    "zod": "3.25.76"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.37.1",
-    "@cloudflare/workers-types": "4.20260515.1",
-    "@tailwindcss/postcss": "4.2.1",
-    "@types/node": "22.19.19",
-    "@types/qrcode": "^1.5.6",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.26",
-    "drizzle-kit": "0.31.10",
+    "@cloudflare/vite-plugin": "1.63.0",
+    "@cloudflare/workers-types": "5.20261008.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "24.19.1",
+    "@types/qrcode": "1.5.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "@vitejs/plugin-rsc": "0.5.36",
+    "drizzle-kit": "0.31.11",
     "eslint": "9.39.4",
-    "eslint-config-next": "16.3.4",
-    "react-server-dom-webpack": "19.2.6",
-    "tailwindcss": "4.2.1",
-    "tw-animate-css": "^1.4.0",
+    "eslint-config-next": "16.4.0",
+    "react-server-dom-webpack": "19.3.0",
+    "tailwindcss": "4.3.3",
+    "tw-animate-css": "1.4.0",
     "typescript": "5.9.3",
-    "vinext": "1.0.0-beta.5",
-    "vite": "8.0.13",
-    "wrangler": "4.92.0"
+    "vinext": "1.0.1",
+    "vite": "8.3.3",
+    "wrangler": "4.148.0",
+    "playwright": "1.63.0",
+    "esbuild": "0.28.2",
+    "miniflare": "5.20261006.0-alpha"
   },
   "type": "module",
   "overrides": {
     "miniflare": {
-      "sharp": "0.35.4"
+      "sharp": "0.35.5"
+    },
+    "@esbuild-kit/core-utils": {
+      "esbuild": "0.28.2"
+    },
+    "satori": {
+      "fflate": "0.8.3"
     }
-  }
+  },
+  "packageManager": "npm@12.2.0",
+  "license": "MIT",
+  "description": "Bitcoin derivatives practice app and developer starter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agammann/lazer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/agammann/lazer/issues"
+  },
+  "homepage": "https://lazer.alx21.chatgpt.site/"
 }

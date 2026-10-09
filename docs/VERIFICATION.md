@@ -18,6 +18,9 @@ Run from the repository root:
 npm run typecheck
 npm test
 npm run build
+npx playwright install chromium
+npm run test:browser:local
+npm run test:browser:shared
 ```
 
 The current suite contains 72 checks covering matching, reservations, signing, ownership, concurrency, idempotent retries, Bitcoin escrow, native ETH payment verification, inverse derivatives P&L, collateral conservation, liquidation scenarios, Lightning invoice inspection, and shared-room access and restart recovery. API tests execute production handlers against local D1 SQL with explicitly substituted authentication and chain fixtures. They do not contact the public chain, load the deployment seed, or establish mainnet readiness.
@@ -126,3 +129,11 @@ Inspect the [deposit transaction](https://mempool.space/testnet4/tx/2c6f5b332db2
 The [machine readable evidence](evidence/testnet-round-trip.json), [verified CI run](https://github.com/agammann/lazer/actions/runs/35182771859), and [Testnet release](https://github.com/agammann/lazer/releases/tag/v0.1.3-testnet) record the same release. Evidence contains public test transaction details, not credentials or wallet seeds.
 
 Passing fixtures, regtest, or a public Testnet round trip does not certify mainnet custody, recovery procedures, or financial settlement. See [deployment readiness](DEPLOYMENT.md#network-readiness).
+
+## v1.0.0 source verification
+
+The prepared v1 source was checked with Node.js 24.19.0 and npm 12.2.0. All 72 engine/API/protocol tests and the production build passed after dependency maintenance. The actual portable framework browser workflow exercised solo matching, exact settlement, export/replay, invalid and corrupt journals, keyboard cancellation, storage-write failure and retry, narrow layouts, native WebMCP API parity and argument rejection, local development sign-in, database restart and stopped backup restoration. Its test database is separate from the operator's local database.
+
+The shared-room browser suite uses the existing test-only authentication seam and production React component/API handlers with persistent local D1. Its 16 groups cover fictional Alice/Bob/outsider identities, room isolation, exact margin and P&L, ownership, duplicate/stale requests, export, reload, database-runtime restart and five layout widths. These identities are explicitly controlled local fixtures.
+
+A fresh isolated Bitcoin Core 31.1 regtest run verified a 200,000 sat deposit, 20,000 sat trade and signed 15,000 sat withdrawal with six confirmations, and reran the separate escrow harness. These checks are local protocol evidence; the earlier Lightning and public Testnet records above keep their original dates and scope. Release CI repeats source and extracted-package checks on Windows and Linux.
