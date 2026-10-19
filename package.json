@@ -25,7 +25,7 @@
     "check": "npm run typecheck && npm test && npm run build && npm run test:browser:local && npm run test:browser:shared",
     "package:release": "node scripts/package-release.mjs",
     "test:consumer": "node scripts/consumer-check.mjs",
-    "security:audit": "npm audit --audit-level=low"
+    "security:audit": "npm audit --audit-level=info"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",
