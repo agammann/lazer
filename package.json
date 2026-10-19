@@ -1,6 +1,6 @@
 {
   "name": "lazer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "engines": {
     "node": ">=24.19.0 <25",
@@ -13,7 +13,7 @@
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "test": "node scripts/test.mjs",
+    "test": "node scripts/test.mjs && node --test scripts/bounded-braces.test.cjs",
     "test:escrow:core": "node scripts/escrow-regtest.mjs",
     "escrow": "node scripts/escrow-cli.mjs",
     "funding:inspect": "node scripts/funding-inspect.mjs",
@@ -24,7 +24,8 @@
     "test:browser:shared": "node scripts/test-browser-shared.mjs",
     "check": "npm run typecheck && npm test && npm run build && npm run test:browser:local && npm run test:browser:shared",
     "package:release": "node scripts/package-release.mjs",
-    "test:consumer": "node scripts/consumer-check.mjs"
+    "test:consumer": "node scripts/consumer-check.mjs",
+    "security:audit": "npm audit --audit-level=low"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",
@@ -80,7 +81,9 @@
     "wrangler": "4.148.0",
     "playwright": "1.63.0",
     "esbuild": "0.28.2",
-    "miniflare": "5.20261006.0-alpha"
+    "miniflare": "5.20261006.0-alpha",
+    "@agammann/bounded-braces": "file:vendor/bounded-braces",
+    "braces": "file:vendor/bounded-braces"
   },
   "type": "module",
   "overrides": {
@@ -92,7 +95,8 @@
     },
     "satori": {
       "fflate": "0.8.3"
-    }
+    },
+    "braces": "$braces"
   },
   "packageManager": "npm@12.2.0",
   "license": "MIT",
