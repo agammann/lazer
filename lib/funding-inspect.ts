@@ -1,4 +1,4 @@
-import { decode } from 'bolt11';
+import { parsePaymentRequest } from 'invoices';
 
 export type Rail = 'lightning';
 export type Environment = 'mainnet' | 'test' | 'regtest';
@@ -8,12 +8,14 @@ export function inspectFunding(rail: Rail, value: string, environment: Environme
   if (typeof value !== 'string' || !value || value.length > 5000 || /\s/.test(value)) throw Error('Expected an address or invoice without whitespace.');
   const base = { rail, environment, transfersEnabled: false, ownershipVerified: false, collateralCredited: false } as const;
   if (rail === 'lightning') {
-    const decoded = decode(value), expected = environment === 'mainnet' ? 'bc' : environment === 'regtest' ? 'bcrt' : 'tb';
-    if (decoded.network?.bech32 !== expected) throw Error('Lightning invoice network does not match the selected environment.');
-    if (!decoded.complete || !decoded.payeeNodeKey || !decoded.tagsObject.payment_hash) throw Error('Incomplete BOLT11 invoice.');
-    if (!decoded.millisatoshis || BigInt(decoded.millisatoshis) <= BigInt(0)) throw Error('Amountless or zero amount invoices are not supported.');
-    if (!Number.isSafeInteger(now) || now < 0 || !decoded.timeExpireDate || decoded.timeExpireDate <= now) throw Error('Lightning invoice expired or has no valid expiry.');
-    return { ...base, amountMsats: decoded.millisatoshis, paymentHash: decoded.tagsObject.payment_hash, expiresAt: decoded.timeExpireDate,
+    const decoded = parsePaymentRequest({ request: value });
+    const expected = environment === 'mainnet' ? 'bitcoin' : environment === 'regtest' ? 'regtest' : 'testnet';
+    if (decoded.network !== expected) throw Error('Lightning invoice network does not match the selected environment.');
+    if (!decoded.destination || !decoded.id) throw Error('Incomplete BOLT11 invoice.');
+    if (!decoded.mtokens || BigInt(decoded.mtokens) <= BigInt(0)) throw Error('Amountless or zero amount invoices are not supported.');
+    const expiresAt = Date.parse(decoded.expires_at) / 1000;
+    if (!Number.isSafeInteger(now) || now < 0 || !Number.isSafeInteger(expiresAt) || expiresAt <= now) throw Error('Lightning invoice expired or has no valid expiry.');
+    return { ...base, amountMsats: decoded.mtokens, paymentHash: decoded.id, expiresAt,
       note: environment === 'test' ? 'lntb does not distinguish Signet from other Bitcoin test networks. Verify the receiving node chain separately.' : 'Decoded BOLT11 only. No payment or settlement verification.' };
   }
   throw Error('Only Lightning is supported.');

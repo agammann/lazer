@@ -5,7 +5,7 @@ import { mkdirSync, writeFileSync, openSync, existsSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import assert from 'node:assert/strict';
-import bolt11 from 'bolt11';
+import { parsePaymentRequest } from 'invoices';
 
 const names = ['BITCOIND', 'BITCOIN_CLI', 'LND', 'LNCLI'];
 for (const name of names) if (!process.env[name] || !existsSync(process.env[name])) throw Error(`Set ${name} to the installed executable path.`);
@@ -61,11 +61,11 @@ try {
   console.log('Lightning channel active. Testing a 100,000 sat deposit and 15,000 sat return.');
   function payment(sender, receiver, sats) {
     const invoice = ln(receiver, 'addinvoice', `--amt=${sats}`, '--memo=Lazer isolated regtest verification');
-    const decoded = bolt11.decode(invoice.payment_request);
-    assert.equal(decoded.network.bech32, 'bcrt'); assert.equal(decoded.satoshis, sats);
+    const decoded = parsePaymentRequest({ request: invoice.payment_request });
+    assert.equal(decoded.network, 'regtest'); assert.equal(decoded.mtokens, String(sats * 1000));
     const paid = ln(sender, 'payinvoice', '--force', '--json', invoice.payment_request);
     assert.equal(paid.status, 'SUCCEEDED');
-    const paymentHash = decoded.tagsObject.payment_hash;
+    const paymentHash = decoded.id;
     const received = ln(receiver, 'lookupinvoice', paymentHash);
     assert.equal(received.state, 'SETTLED'); assert.equal(Number(received.amt_paid_sat), sats);
     return { paymentHash, sats, senderStatus: paid.status, receiverState: received.state, feeSats: Number(paid.fee_sat) };
