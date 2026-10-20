@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2
+
+- Require lint in the source and consumer check gate, resolve provider response types and hook findings, and exclude generated verification output.
+- Keep the legacy wallet QR tied to its selected account and reject late withdrawal quotes after inputs change, including changes away and back.
+- Preserve portable document navigation and use short native runtime paths for shared-room browser verification on Windows.
+- Add browser regression coverage for account-specific QR modules and delayed quote responses. Historical funded protocol evidence keeps its original source and scope.
+
 ## 1.0.1
 
 - Replace the unbounded brace dependency with a maintained compatibility package that preserves ordinary glob behavior and the upstream license.

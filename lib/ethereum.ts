@@ -17,7 +17,10 @@ export type EscrowTrade = {
   chainId: number;
   paymentData: string;
 };
-export type Rpc = (method: string, params?: unknown[]) => Promise<any>;
+export type Rpc = <T = unknown>(method: string, params?: unknown[]) => Promise<T>;
+type EthTransaction = {hash:string;blockHash:string;blockNumber:string|null;from:string;to:string;value:string;input:string;chainId?:string};
+type EthReceipt = {transactionHash:string;blockHash:string;blockNumber:string;status:string;from:string;to:string};
+type EthBlock = {hash:string;number:string;timestamp:string};
 const CHAINS = { sepolia: 11155111, local: 31337 } as const;
 const hashPattern = /^0x[a-f0-9]{64}$/i;
 function ethAddress(input: string) {
@@ -61,7 +64,7 @@ export async function verifyEthPayment(trade: EscrowTrade, txid: string, rpc: Rp
   if (typeof txid !== 'string' || !hashPattern.test(txid)) throw Error('Enter a 32 byte Ethereum transaction hash.');
   txid = txid.toLowerCase();
   if (quantity(await rpc('eth_chainId'), 'chain ID') !== BigInt(t.chainId)) throw Error('Ethereum node is on the wrong network.');
-  const [tx, receipt] = await Promise.all([rpc('eth_getTransactionByHash', [txid]), rpc('eth_getTransactionReceipt', [txid])]);
+  const [tx, receipt] = await Promise.all([rpc<EthTransaction|null>('eth_getTransactionByHash', [txid]), rpc<EthReceipt|null>('eth_getTransactionReceipt', [txid])]);
   if (!tx || !receipt || !tx.blockHash || tx.blockNumber === null) throw Error('ETH payment is missing or pending.');
   if (tx.hash?.toLowerCase() !== txid || receipt.transactionHash?.toLowerCase() !== txid || !hashPattern.test(tx.blockHash) ||
       tx.blockHash.toLowerCase() !== receipt.blockHash?.toLowerCase() || tx.blockNumber !== receipt.blockNumber) throw Error('Ethereum transaction and receipt disagree.');
@@ -73,8 +76,8 @@ export async function verifyEthPayment(trade: EscrowTrade, txid: string, rpc: Rp
   if (tx.chainId !== undefined && quantity(tx.chainId, 'transaction chain ID') !== BigInt(t.chainId)) throw Error('Transaction chain ID does not match.');
   const blockNumber = quantity(receipt.blockNumber, 'block number');
   const [canonical, finalized, code] = await Promise.all([
-    rpc('eth_getBlockByNumber', [receipt.blockNumber, false]),
-    rpc('eth_getBlockByNumber', ['finalized', false]),
+    rpc<EthBlock|null>('eth_getBlockByNumber', [receipt.blockNumber, false]),
+    rpc<EthBlock|null>('eth_getBlockByNumber', ['finalized', false]),
     rpc('eth_getCode', [t.payment.sellerAddress, receipt.blockNumber]),
   ]);
   if (!canonical || !finalized || !hashPattern.test(canonical.hash) || !hashPattern.test(finalized.hash) ||

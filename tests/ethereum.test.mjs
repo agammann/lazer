@@ -51,7 +51,7 @@ test('contract recipients and token calls are not mistaken for native ETH paymen
  data.code='0x';data.tx.value='0x0';data.tx.input='0xa9059cbb';await assert.rejects(verifyEthPayment(trade,txid,rpc));
 });
 test('payment from another trade fails even when recipient and value match',async()=>{
- const {trade,rpc}=fixture(),other=createEscrowTrade(createEscrowContract({...bitcoin,tradeId:'different'}),payment);
+ const {rpc}=fixture(),other=createEscrowTrade(createEscrowContract({...bitcoin,tradeId:'different'}),payment);
  await assert.rejects(verifyEthPayment(other,txid,rpc),/not bound/);
 });
 test('RPC transport enforces read only methods and response correlation',async()=>{

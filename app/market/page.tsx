@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Zap, Users, RefreshCw } from 'lucide-react';
 import { PracticeChart } from '@/components/practice-chart';
 import { margin, pnlAt } from '@/lib/derivatives';
@@ -15,11 +15,11 @@ export default function SharedMarket() {
   const [code, setCode] = useState(''), [error, setError] = useState(''), [busy, setBusy] = useState(false), [retry, setRetry] = useState(false);
   const [price, setPrice] = useState('60000'), [quantity, setQuantity] = useState('100'), [leverage, setLeverage] = useState(2), [side, setSide] = useState<'long' | 'short'>('long');
   const current = useRef<SharedView | null>(null), pending = useRef<Pending | null>(null), sending = useRef(false);
-  function accept(next: SharedView | null) {
+  const accept = useCallback((next: SharedView | null) => {
     if (next && current.current?.id === next.id && next.revision < current.current.revision) return;
     current.current = next; setRoom(next);
-  }
-  async function refresh(id?: string) {
+  }, []);
+  const refresh = useCallback(async (id?: string) => {
     const requested = id ?? current.current?.id;
     try {
       const response = await fetch('/api/derivatives' + (requested ? '?room=' + encodeURIComponent(requested) : ''), { cache: 'no-store' });
@@ -30,8 +30,8 @@ export default function SharedMarket() {
       // A slow poll from the previous room must not replace a newly joined room.
       if (!requested || !current.current || requested === current.current.id) accept(data.room);
     } catch (e) { setError((e as Error).message); }
-  }
-  useEffect(() => { void refresh(); const timer = setInterval(() => { if (!document.hidden && current.current && !sending.current) void refresh(); }, 5000); return () => clearInterval(timer); }, []);
+  }, [accept]);
+  useEffect(() => { const initial = setTimeout(() => void refresh(), 0); const timer = setInterval(() => { if (!document.hidden && current.current && !sending.current) void refresh(); }, 5000); return () => { clearTimeout(initial); clearInterval(timer); }; }, [refresh]);
   async function send(input?: Pending) {
     if (sending.current) return;
     const body = input ? { ...input, requestId: crypto.randomUUID(), issuedAt: Date.now(), ...(current.current ? { roomId: current.current.id, revision: current.current.revision } : {}), ...(input.action === 'join' ? { roomId: code.trim().toLowerCase() } : {}) } : pending.current;
