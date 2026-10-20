@@ -10,6 +10,8 @@ See [the derivatives guide](DERIVATIVES.md) for the Lightning harness and fundin
 
 Use Git, Node.js 24.19.0 within 24.x, and npm 12.2.0. CI pins those exact versions. Bitcoin Core is optional for the local UI and automated suite, and required for the separate node integration checks.
 
+On Windows, use a short checkout or extraction path for Wrangler’s native SQLite files. For a deeply nested checkout, set `LAZER_LOCAL_STATE` to a short writable directory and use the same value for setup and development.
+
 Run every command below from the repository root. The commands work in PowerShell and typical Unix shells unless labeled otherwise.
 
 ```sh

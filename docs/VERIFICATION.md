@@ -137,3 +137,11 @@ The prepared v1 source was checked with Node.js 24.19.0 and npm 12.2.0. All 72 e
 The shared-room browser suite uses the existing test-only authentication seam and production React component/API handlers with persistent local D1. Its 16 groups cover fictional Alice/Bob/outsider identities, room isolation, exact margin and P&L, ownership, duplicate/stale requests, export, reload, database-runtime restart and five layout widths. These identities are explicitly controlled local fixtures.
 
 A fresh isolated Bitcoin Core 31.1 regtest run verified a 200,000 sat deposit, 20,000 sat trade and signed 15,000 sat withdrawal with six confirmations, and reran the separate escrow harness. These checks are local protocol evidence; the earlier Lightning and public Testnet records above keep their original dates and scope. Release CI repeats source and extracted-package checks on Windows and Linux.
+
+## v1.0.2 verification scope
+
+The owning source and extracted-package gate now includes lint, TypeScript checks, 73 engine/API/protocol tests, six bounded-dependency tests, the production build and both browser workflows. The added legacy wallet browser case compares Alice and Bob QR modules and delays a withdrawal quote until its inputs change away and back. Its account and quote responses are controlled UI fixtures; it submits no transfer.
+
+The browser workflows retain actual framework sign-in, native WebMCP, database restart, stopped backup recovery and persistent shared-room coverage. Native shared-browser temporary files use a short OS-temp directory. Windows checkouts with deeply nested application database paths can select a short `LAZER_LOCAL_STATE` for both setup and development, as described in [development](DEVELOPMENT.md).
+
+The Bitcoin Core, escrow, Lightning and public Testnet receipts above remain historical evidence for their recorded commits and dates. Those funded protocol harnesses were not rerun for these UI, typing and verification-harness changes. This release does not update the public Sites deployment or claim a new funded chain round trip.
