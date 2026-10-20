@@ -20,11 +20,14 @@ export default function Home() {
   const [trader, setTrader] = useState<Trader>('Alice'), [side, setSide] = useState<Direction>('long');
   const [price, setPrice] = useState('60000'), [quantity, setQuantity] = useState('100'), [leverage, setLeverage] = useState(2);
   const [tab, setTab] = useState<Tab>('Positions'), [panel, setPanel] = useState<Panel>('Trade'), [error, setError] = useState(''), [message, setMessage] = useState('');
-  const input = useRef<HTMLInputElement>(null), latest = useRef({ state, commands }); latest.current = { state, commands };
+  const input = useRef<HTMLInputElement>(null), latest = useRef({ state, commands }); useEffect(() => { latest.current = { state, commands }; }, [state, commands]);
   useEffect(() => {
+    const timer = setTimeout(() => {
     try { const saved = sessionStorage.getItem(KEY); if (saved) { const restored = replay(JSON.parse(saved)); setState(restored.state); setCommands(restored.commands); setMessage(`Restored ${restored.commands.length} practice commands.`); } }
     catch { setError('The saved practice journal could not be restored. This session starts fresh; real Testnet balances are unaffected.'); }
     setReady(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
   function persist(next: Practice, history: Command[]) {
     try { sessionStorage.setItem(KEY, JSON.stringify({ version: 1, commands: history })); }

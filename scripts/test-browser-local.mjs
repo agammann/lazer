@@ -5,6 +5,7 @@ import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { chromium } from 'playwright';
+import QRCode from 'qrcode';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const directory = join(root, 'work', 'browser-local');
@@ -114,6 +115,33 @@ try {
   assert.ok(nativeErrors.every(m=>m==='WebMCP tool execution failed: Uncaught Error: Expected an empty object.'));
   report.expectedArgumentRejectionConsole=nativeErrors;
   check('Actual native WebMCP registration/invocation matches anonymous exchange GET and rejects extra arguments');
+  const walletPage=await pageFor(), accounts=['Alice','Bob'].map(person=>({id:person,person,address:'tb1q-ui-fixture-'+person.toLowerCase(),availableSats:50000,reservedSats:0,availableUSD:100000000000}));
+  let releaseQuote, quoteStarted;
+  const quotePending=new Promise(resolve=>{quoteStarted=resolve;});
+  await walletPage.route('**/api/exchange',async route=>{
+    if(route.request().method()==='POST') {assert.equal(route.request().postDataJSON().action,'quote');quoteStarted();await new Promise(resolve=>{releaseQuote=resolve;});await route.fulfill({json:{fee:100}});}
+    else await route.fulfill({json:{...expected,authenticated:true,accounts}});
+  });
+  await walletPage.route('**/api/market',route=>route.fulfill({json:{candles:[],fees:null,height:null,prices:null,errors:[]}}));
+  await walletPage.goto(origin+'/legacy');
+  for(const person of ['Alice','Bob']) {
+    await walletPage.locator('.account-card').filter({hasText:person}).getByRole('button',{name:'Deposit / Withdraw',exact:true}).click();
+    const code=QRCode.create('bitcoin:'+accounts.find(a=>a.person===person).address+'?label=Lazer%20Testnet%204'), image=walletPage.getByAltText('Testnet deposit address QR',{exact:true});
+    await image.waitFor();
+    const pixels=await image.evaluate(async(img,size)=>{await img.decode();const canvas=document.createElement('canvas');canvas.width=canvas.height=img.naturalWidth;const context=canvas.getContext('2d');context.drawImage(img,0,0);const pixels=context.getImageData(0,0,canvas.width,canvas.height).data;return Array.from({length:size*size},(_,i)=>{const x=Math.floor((i%size+2.5)*canvas.width/(size+4)),y=Math.floor((Math.floor(i/size)+2.5)*canvas.height/(size+4));return pixels[(y*canvas.width+x)*4]<128?1:0;});},code.modules.size);
+    assert.deepEqual(pixels,Array.from(code.modules.data));
+    await walletPage.getByRole('dialog').getByRole('button',{name:'Close',exact:true}).click();
+  }
+  await walletPage.locator('.account-card').filter({hasText:'Alice'}).getByRole('button',{name:'Deposit / Withdraw',exact:true}).click();
+  await walletPage.getByRole('tab',{name:'Withdraw',exact:true}).click();await walletPage.getByLabel('Bitcoin Core receiving address',{exact:true}).fill('tb1q-ui-destination');
+  await walletPage.getByRole('button',{name:'Review withdrawal',exact:true}).click();await quotePending;
+  await walletPage.getByLabel('Amount in satoshis',{exact:true}).fill('2000');await walletPage.getByLabel('Amount in satoshis',{exact:true}).fill('1000');releaseQuote();
+  await walletPage.getByRole('button',{name:'Review withdrawal',exact:true}).waitFor({state:'visible'});
+  await walletPage.waitForFunction(()=>Array.from(document.querySelectorAll('button')).some(button=>button.textContent==='Review withdrawal'&&!button.disabled));
+  assert.equal(await walletPage.getByRole('button',{name:'Confirm and send test Bitcoin',exact:true}).count(),0);
+  await walletPage.screenshot({path:join(output,'legacy-quote-input-change.png'),fullPage:false});
+  check('Legacy QR follows the selected account; a late quote cannot survive changed-and-restored inputs (isolated UI responses)');
+  await walletPage.context().close();
   await legacy.goto(origin+'/market');await legacy.getByRole('heading',{name:'Trade a test scenario together.',exact:true}).waitFor();
   assert.ok(!(await legacy.evaluate(async()=>(await document.modelContext.getTools()).map(t=>t.name))).includes('read_lazer'));
   check('Native legacy tool disappears after navigation');

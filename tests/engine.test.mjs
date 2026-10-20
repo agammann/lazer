@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fresh, openAccount, creditDeposit, balance, place, cancel, applyCommand, reserveWithdrawal, invariant, START_USD } from '../work/engine.mjs';
 import { wallet, walletId, accountId, prepareWithdrawal, testnetAddress } from '../work/bitcoin.mjs';
-import { Transaction, Psbt, networks } from 'bitcoinjs-lib';
+import { Transaction } from 'bitcoinjs-lib';
 const seed = '11'.repeat(32), now = new Date().toISOString();
 const ids = ['Alice','Bob'].map(p => accountId('unit-test-owner',p));
 function setup(funded=true) { const s=fresh(); ['Alice','Bob'].forEach((person,i)=> { const w=wallet(seed,ids[i]); openAccount(s,{id:ids[i],person,sats:0,usd:0,address:w.address,script:w.script},walletId(seed)); }); if(funded) creditDeposit(s,ids[0],proof(),now); return s; }

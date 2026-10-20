@@ -10,6 +10,17 @@ const eslintConfig = defineConfig([
     files: ["vendor/bounded-braces/**/*.js", "scripts/bounded-braces.test.cjs"],
     rules: { "@typescript-eslint/no-require-imports": "off" },
   },
+  {
+    // These portable routes also run in the standalone React browser harness.
+    // Document navigation must not depend on a Next.js router context.
+    files: ["app/page.tsx", "app/market/page.tsx", "app/legacy/page.tsx"],
+    rules: { "@next/next/no-html-link-for-pages": "off" },
+  },
+  {
+    // The QR is a small client-generated data URL with explicit dimensions.
+    files: ["app/legacy/page.tsx"],
+    rules: { "@next/next/no-img-element": "off" },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
@@ -17,6 +28,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "work/**",
+    "consumer-output/**",
+    "release-artifacts/**",
   ]),
   {
     files: ["components/ui/**/*.{ts,tsx}", "hooks/use-mobile.ts"],

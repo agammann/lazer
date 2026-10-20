@@ -22,7 +22,7 @@
     "setup:local": "node scripts/init-local.mjs",
     "test:browser:local": "node scripts/test-browser-local.mjs",
     "test:browser:shared": "node scripts/test-browser-shared.mjs",
-    "check": "npm run typecheck && npm test && npm run build && npm run test:browser:local && npm run test:browser:shared",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build && npm run test:browser:local && npm run test:browser:shared",
     "package:release": "node scripts/package-release.mjs",
     "test:consumer": "node scripts/consumer-check.mjs",
     "security:audit": "npm audit --audit-level=info"

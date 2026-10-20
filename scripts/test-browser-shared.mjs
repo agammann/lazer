@@ -5,7 +5,6 @@ import { readFile, writeFile, mkdir, readdir, mkdtemp } from 'node:fs/promises';
 import { dirname, resolve, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { randomBytes, createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const qa = join(repo, 'work', 'browser-shared'); await mkdir(qa, {recursive:true});
 const require = createRequire(join(repo, 'package.json'));
