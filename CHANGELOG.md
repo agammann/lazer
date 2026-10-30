@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- Refresh locked application and local verification dependencies to patched compatible versions, and remove unused form and schema packages.
+- Preserve practice and shared-room behavior with passing dependency, unit, build and isolated worker checks.
+
 ## 1.0.2
 
 - Require lint in the source and consumer check gate, resolve provider response types and hook findings, and exclude generated verification output.
