@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",
-    "@bitcoinerlab/secp256k1": "1.2.0",
+    "@bitcoinerlab/secp256k1": "2.0.0",
     "@shadcn/react": "0.3.1",
     "bitcoinjs-lib": "7.0.2",
     "class-variance-authority": "0.7.1",
