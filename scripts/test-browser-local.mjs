@@ -108,7 +108,7 @@ try {
   await legacy.goto(origin+'/legacy',{waitUntil:'domcontentloaded'});const response=await exchange;assert.equal(response.status(),200);const expected=await response.json();assert.equal(expected.authenticated,false);
   await legacy.waitForFunction(async()=>typeof document.modelContext?.getTools==='function'&&(await document.modelContext.getTools()).some(t=>t.name==='read_lazer'));
   const beforeNativeErrors=report.consoleErrors.length;
-  const native=await legacy.evaluate(async()=>{const tools=await document.modelContext.getTools();const tool=tools.find(t=>t.name==='read_lazer');const result=await document.modelContext.executeTool(tool,'{}');let rejected=false;try{await document.modelContext.executeTool(tool,'{"unexpected":true}');}catch{rejected=true;}return {result,rejected,count:tools.filter(t=>t.name==='read_lazer').length};});
+  const native=await legacy.evaluate(async()=>{const tools=await document.modelContext.getTools();const tool=tools.find(t=>t.name==='read_lazer');const result=await document.modelContext.executeTool(tool,{});let rejected=false;try{await document.modelContext.executeTool(tool,{unexpected:true});}catch{rejected=true;}return {result,rejected,count:tools.filter(t=>t.name==='read_lazer').length};});
   let payload=typeof native.result==='string'?JSON.parse(native.result):native.result;if(payload?.content)payload=JSON.parse(payload.content.find(t=>t.type==='text').text);
   assert.equal(native.count,1);assert.equal(native.rejected,true);assert.equal(payload.network,'testnet4');assert.equal(payload.usdIsSimulated,true);assert.deepEqual(payload.state,expected);
   const nativeErrors=report.consoleErrors.slice(beforeNativeErrors);

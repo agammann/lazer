@@ -23,7 +23,9 @@ npm run test:browser:local
 npm run test:browser:shared
 ```
 
-The current suite contains 72 checks covering matching, reservations, signing, ownership, concurrency, idempotent retries, Bitcoin escrow, native ETH payment verification, inverse derivatives P&L, collateral conservation, liquidation scenarios, Lightning invoice inspection, and shared-room access and restart recovery. API tests execute production handlers against local D1 SQL with explicitly substituted authentication and chain fixtures. They do not contact the public chain, load the deployment seed, or establish mainnet readiness.
+On November 4, 2026, the domain suite passed 73 checks covering matching, reservations, signing, ownership, concurrency, idempotent retries, Bitcoin escrow, native ETH payment verification, inverse derivatives P&L, collateral conservation, liquidation scenarios, Lightning invoice inspection, and shared-room access and restart recovery. `npm test` also passed six bounded-brace compatibility checks. API tests execute production handlers against local D1 SQL with explicitly substituted authentication and chain fixtures. They do not contact the public chain, load the deployment seed, or establish mainnet readiness.
+
+The same follow-up passed lint, TypeScript validation, the production build, and both browser suites on Edge 156 with `LAZER_BROWSER_CHANNEL=msedge`. The local suite exercised the native read tool and its argument rejection, persistent development sign-in, database restart, and backup restoration. The native test now passes JavaScript input objects to `executeTool`; [Chrome's current API documentation](https://developer.chrome.com/docs/ai/webmcp/imperative-api#execute-tool) deprecates JSON-string arguments from Chrome 155. These local checks do not repeat the historical funded chain or hosted authentication tests below.
 
 The original public Testnet release had 26 checks. Its historical evidence below retains that count. The separate escrow implementation adds 12 Bitcoin protocol tests and 11 Ethereum verification tests. See the [escrow guide](ESCROW.md) for the Bitcoin Core escrow harness and its recorded regtest evidence.
 
