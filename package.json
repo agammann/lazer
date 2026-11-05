@@ -13,7 +13,7 @@
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "test": "node scripts/test.mjs && node --test scripts/bounded-braces.test.cjs",
+    "test": "node scripts/test.mjs && node --test scripts/bounded-braces.test.cjs scripts/webmcp-input.test.mjs",
     "test:escrow:core": "node scripts/escrow-regtest.mjs",
     "escrow": "node scripts/escrow-cli.mjs",
     "funding:inspect": "node scripts/funding-inspect.mjs",
@@ -86,6 +86,9 @@
   "type": "module",
   "overrides": {
     "fast-uri": "3.1.9",
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.1"
+    },
     "miniflare": {
       "sharp": "0.35.5",
       "undici": "7.30.1"
