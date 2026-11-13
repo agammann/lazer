@@ -128,6 +128,17 @@ try {
   });
   await walletPage.route('**/api/market',route=>route.fulfill({json:{candles:[],fees:null,height:null,prices:null,errors:[]}}));
   await walletPage.goto(origin+'/legacy');
+  const walletOpener=walletPage.locator('.account-card').filter({hasText:'Alice'}).getByRole('button',{name:'Deposit / Withdraw',exact:true});
+  await walletOpener.click();
+  const walletDialog=walletPage.getByRole('dialog');
+  await walletDialog.getByRole('tab',{name:'Deposit',exact:true}).focus();
+  await walletPage.keyboard.press('ArrowRight');
+  await walletDialog.getByRole('tab',{name:'Withdraw',exact:true,selected:true}).waitFor();
+  await walletPage.keyboard.press('ArrowLeft');
+  await walletDialog.getByRole('tab',{name:'Deposit',exact:true,selected:true}).waitFor();
+  await walletPage.keyboard.press('Escape');
+  await walletDialog.waitFor({state:'hidden'});
+  check('Synthetic wallet dialog switches tabs by keyboard and closes on Escape');
   for(const person of ['Alice','Bob']) {
     await walletPage.locator('.account-card').filter({hasText:person}).getByRole('button',{name:'Deposit / Withdraw',exact:true}).click();
     const code=QRCode.create('bitcoin:'+accounts.find(a=>a.person===person).address+'?label=Lazer%20Testnet%204'), image=walletPage.getByAltText('Testnet deposit address QR',{exact:true});
