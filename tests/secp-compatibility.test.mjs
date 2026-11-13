@@ -5,6 +5,7 @@ import * as ecc from '@bitcoinerlab/secp256k1';
 const bytes = value => Buffer.from(value, 'hex');
 
 // Public test vectors only; these keys must never hold funds.
+// ECDSA: https://github.com/bitcoinerlab/secp256k1/blob/v2.0.0/test/fixtures/ecdsa.json
 test('ECDSA signs the known digest and rejects altered or malformed inputs', () => {
   const key = bytes('0000000000000000000000000000000000000000000000000000000000000001');
   const digest = bytes('06ef2b193b83b3d701f765f1db34672ab84897e1252343cc2197829af3a30456');
@@ -18,7 +19,8 @@ test('ECDSA signs the known digest and rejects altered or malformed inputs', () 
   assert.throws(() => ecc.verify(digest, Buffer.alloc(33), expected), /Expected Point/);
 });
 
-// BIP-340 test vector 0 (fixed auxiliary randomness).
+// BIP-340 test vector 0 (fixed auxiliary randomness):
+// https://github.com/bitcoin/bips/blob/master/bip-0340/test-vectors.csv
 test('BIP-340 signing and verification match the published vector', () => {
   const key = bytes('0000000000000000000000000000000000000000000000000000000000000003');
   const digest = Buffer.alloc(32);
