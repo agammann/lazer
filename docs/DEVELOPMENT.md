@@ -58,18 +58,15 @@ Keep the local server bound to loopback. Do not publish it through a tunnel or t
 | `npm test` | Engine and API tests, with isolated authentication and chain fixtures |
 | `npm run build` | Production Worker and client bundle under `dist/` |
 | `npm start` | Local preview of the built Worker; not a production deployment and not the development sign in flow |
-| `npm run lint` | Additional ESLint diagnostics; not currently a required CI gate |
+| `npm run lint` | ESLint diagnostics required by npm run check and CI |
 | `npm run db:generate` | Generate a new migration after an intentional schema change; does not apply it |
 
 Required checks before publication:
 
 ```sh
-npm run typecheck
-npm test
-npm run build
+npm run security:audit
 npx playwright install chromium
-npm run test:browser:local
-npm run test:browser:shared
+npm run check
 ```
 
 The local browser suite runs the actual framework with a fresh database. The shared-room browser suite bundles the production component and request handlers with the existing test-only identity seam, fictional Alice/Bob/outsider identities and real persistent D1. It runs only on loopback. The framework suite also exercises the browser's native WebMCP API with its testing feature enabled; it installs no polyfill.
