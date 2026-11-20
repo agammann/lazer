@@ -10,7 +10,7 @@ See [the derivatives guide](DERIVATIVES.md) for the Lightning harness and fundin
 
 Use Git, Node.js 24.19.0 within 24.x, and npm 12.2.0. CI pins those exact versions. Bitcoin Core is optional for the local UI and automated suite, and required for the separate node integration checks.
 
-On Windows, use a short checkout or extraction path for Wrangler’s native SQLite files. For a deeply nested checkout, set `LAZER_LOCAL_STATE` to a short writable directory and use the same value for setup and development.
+On Windows, use a short checkout or extraction path for Wranglerâ€™s native SQLite files. For a deeply nested checkout, set `LAZER_LOCAL_STATE` to a short writable directory and use the same value for setup and development.
 
 Run every command below from the repository root. The commands work in PowerShell and typical Unix shells unless labeled otherwise.
 
@@ -61,6 +61,8 @@ Keep the local server bound to loopback. Do not publish it through a tunnel or t
 | `npm run lint` | ESLint diagnostics required by npm run check and CI |
 | `npm run db:generate` | Generate a new migration after an intentional schema change; does not apply it |
 
+`npm run typecheck` uses the native TypeScript 7 CLI. The `typescript` package alias supplies the TypeScript 6 compiler API to `typescript-eslint`. See [Microsoft's side-by-side configuration](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-60).
+
 Required checks before publication:
 
 ```sh
@@ -69,7 +71,7 @@ npx playwright install chromium
 npm run check
 ```
 
-The local browser suite runs the actual framework with a fresh database. The shared-room browser suite bundles the production component and request handlers with the existing test-only identity seam, fictional Alice/Bob/outsider identities and real persistent D1. It runs only on loopback. The framework suite also exercises the browser's native WebMCP API with its testing feature enabled; it installs no polyfill.
+The local browser suite runs the actual framework with a fresh database. The shared-room browser suite bundles the production component and request handlers with the existing test-only identity seam, fictional Alice/Bob/outsider identities and real persistent D1. It runs only on loopback. The framework suite also exercises the browser's native WebMCP API by launching Chromium with `--enable-features=WebMCP`.
 
 The automated suite does not require faucet coins or a live Bitcoin node. For the separate Bitcoin Core integration, see [verification](VERIFICATION.md).
 
