@@ -57,7 +57,7 @@ async function download(page,name,filename) {
 try {
   for(const file of ['0000_abnormal_dragon_lord.sql','0001_overconfident_doctor_doom.sql'])execFileSync(process.execPath,['--import','./scripts/sites-env.mjs','node_modules/wrangler/bin/wrangler.js','d1','execute','DB','--local','--config','dist/server/wrangler.json','--persist-to',stateDirectory,'--file','drizzle/'+file],{cwd:root,windowsHide:true,stdio:'pipe'});
   await start();
-  browser=await chromium.launch({headless:true,args:['--enable-features=WebMCPTesting'],...(process.env.LAZER_BROWSER_CHANNEL?{channel:process.env.LAZER_BROWSER_CHANNEL}:{})});
+  browser=await chromium.launch({headless:true,args:['--enable-features=WebMCP'],...(process.env.LAZER_BROWSER_CHANNEL?{channel:process.env.LAZER_BROWSER_CHANNEL}:{})});
   report.browser=browser.version();
   const page=await pageFor();await page.goto(origin,{waitUntil:'networkidle'});
   await page.getByRole('button',{name:'Place practice long',exact:true}).click();
@@ -104,7 +104,7 @@ try {
   check('Failed storage write preserves balances and a retry works after storage recovery');
   for(const finished of [page,other,corrupt,blocked])await finished.context().close();
   await browser.close();
-  browser=await chromium.launch({headless:true,args:['--enable-features=WebMCPTesting'],...(process.env.LAZER_BROWSER_CHANNEL?{channel:process.env.LAZER_BROWSER_CHANNEL}:{})});
+  browser=await chromium.launch({headless:true,args:['--enable-features=WebMCP'],...(process.env.LAZER_BROWSER_CHANNEL?{channel:process.env.LAZER_BROWSER_CHANNEL}:{})});
   const legacy=await pageFor();const exchange=legacy.waitForResponse(r=>new URL(r.url()).pathname==='/api/exchange'&&r.request().method()==='GET');
   await legacy.goto(origin+'/legacy',{waitUntil:'domcontentloaded'});const response=await exchange;assert.equal(response.status(),200);const expected=await response.json();assert.equal(expected.authenticated,false);
   await legacy.waitForFunction(async()=>typeof document.modelContext?.getTools==='function'&&(await document.modelContext.getTools()).some(t=>t.name==='read_lazer'));
@@ -167,14 +167,14 @@ try {
   await legacy.reload();await legacy.getByRole('button',{name:'Export snapshot',exact:true}).waitFor();
   assert.equal((await legacy.evaluate(async()=>fetch('/api/derivatives').then(r=>r.json()))).room.id,room.id);
   await browser.close();await stop();await start();
-  browser=await chromium.launch({headless:true,args:['--enable-features=WebMCPTesting'],...(process.env.LAZER_BROWSER_CHANNEL?{channel:process.env.LAZER_BROWSER_CHANNEL}:{})});
+  browser=await chromium.launch({headless:true,args:['--enable-features=WebMCP'],...(process.env.LAZER_BROWSER_CHANNEL?{channel:process.env.LAZER_BROWSER_CHANNEL}:{})});
   const resumed=await pageFor();await resumed.goto(origin+'/market');await resumed.getByRole('link',{name:'Sign in with ChatGPT',exact:true}).click();
   await resumed.getByRole('button',{name:'Export snapshot',exact:true}).waitFor();
   assert.equal((await resumed.evaluate(async()=>fetch('/api/derivatives').then(r=>r.json()))).room.id,room.id);
   check('Documented portable development sign-in creates a persistent room that survives framework restart');
   await browser.close();await stop();await cp(stateDirectory,join(stateRoot,'database-backup'),{recursive:true,errorOnExist:true});
   stateDirectory=join(stateRoot,'restored-database');await cp(join(stateRoot,'database-backup'),stateDirectory,{recursive:true,errorOnExist:true});
-  await start();browser=await chromium.launch({headless:true,args:['--enable-features=WebMCPTesting'],...(process.env.LAZER_BROWSER_CHANNEL?{channel:process.env.LAZER_BROWSER_CHANNEL}:{})});
+  await start();browser=await chromium.launch({headless:true,args:['--enable-features=WebMCP'],...(process.env.LAZER_BROWSER_CHANNEL?{channel:process.env.LAZER_BROWSER_CHANNEL}:{})});
   const restored=await pageFor();await restored.goto(origin+'/market');await restored.getByRole('link',{name:'Sign in with ChatGPT',exact:true}).click();
   await restored.getByRole('button',{name:'Export snapshot',exact:true}).waitFor();
   assert.deepEqual((await restored.evaluate(async()=>fetch('/api/derivatives').then(r=>r.json()))).room,room);
