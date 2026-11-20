@@ -2,10 +2,11 @@
 
 ## 1.0.4
 
-Unpublished source candidate. Publication requires the unchanged zero-advisory gate.
+Publication requires a passing dependency audit with zero findings.
 
 - Update Next.js to 16.4.6, beyond the patched 16.4.5 floor for [GHSA-mfr8-8qww-v76h](https://github.com/vercel/next.js/security/advisories/GHSA-mfr8-8qww-v76h) and [GHSA-vc7v-qv4w-wrv8](https://github.com/vercel/next.js/security/advisories/GHSA-vc7v-qv4w-wrv8).
 - Update Vite to 8.3.8 with a patched Rolldown dependency for [GHSA-p4f5-76q4-ffq7](https://github.com/vitejs/vite/security/advisories/GHSA-p4f5-76q4-ffq7). The advisory concerns network-exposed development servers.
+- Update invoices to 6.3.4 and tiny-secp256k1 to 2.2.5 for [GHSA-hj9c-qx2w-g7mh](https://github.com/advisories/GHSA-hj9c-qx2w-g7mh).
 - Correct the required lint and audit instructions and remove a stale consumer test count.
 
 ## 1.0.3

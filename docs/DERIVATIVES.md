@@ -35,7 +35,7 @@ These packages are pinned in `package-lock.json`. Their upstream repositories an
 
 | Rail | Package/source | Role in this repository |
 | :--- | :--- | :--- |
-| Lightning | [`alexbosworth/invoices`](https://github.com/alexbosworth/invoices), `invoices@6.3.0`, MIT | Decode signed test invoices, check amount/network/expiry |
+| Lightning | [`alexbosworth/invoices`](https://github.com/alexbosworth/invoices), `invoices@6.3.4`, MIT | Decode signed test invoices, check amount/network/expiry |
 | Lightning node | [`lightningnetwork/lnd`](https://github.com/lightningnetwork/lnd), v0.21.3-beta, MIT | Actual local payment harness backed by Bitcoin Core |
 
 

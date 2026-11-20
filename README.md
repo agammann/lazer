@@ -4,9 +4,9 @@ A Bitcoin derivatives practice app and developer starter. Explore limit orders, 
 
 [Open Lazer](https://lazer.alx21.chatgpt.site/) · [Build specification](docs/DERIVATIVES.md) · [Verification workflow](https://github.com/agammann/lazer/actions/workflows/verify.yml)
 
-The 1.0.4 source candidate updates Next.js and Vite. It remains unpublished while the required dependency audit reports an advisory without a supported patch. The available source release is [v1.0.3](https://github.com/agammann/lazer/releases/tag/v1.0.3).
+Lazer 1.0.4 updates Next.js, Vite and the Lightning invoice parser. Download the [latest published source release](https://github.com/agammann/lazer/releases/latest).
 
-**v1.0.3 includes a solo practice terminal, server-saved shared test rooms, and reproducible local protocol harnesses.** Shared rooms let two signed-in people trade as Alice and Bob. All derivatives balances are practice sats and cannot be withdrawn.
+**Lazer includes a solo practice terminal, server-saved shared test rooms, and reproducible local protocol harnesses.** Shared rooms let two signed-in people trade as Alice and Bob. All derivatives balances are practice sats and cannot be withdrawn.
 
 ## Trade with another person
 
@@ -39,7 +39,7 @@ See [Lightning payment evidence](docs/evidence/lightning-regtest.json) and the [
 
 ## Run locally
 
-Use Node.js 24.19.0 (24.x) and npm 12.2.0. Download the [v1.0.3 source release](https://github.com/agammann/lazer/releases/tag/v1.0.3) or clone the repository:
+Use Node.js 24.19.0 (24.x) and npm 12.2.0. Download the [latest source release](https://github.com/agammann/lazer/releases/latest) or clone the repository:
 
 ```sh
 git clone https://github.com/agammann/lazer.git
