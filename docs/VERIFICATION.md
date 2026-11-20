@@ -2,6 +2,18 @@
 
 [Back to Lazer](../README.md)
 
+## November 17, 2026 source candidate
+
+The unpublished 1.0.4 candidate uses Node 24.19.0 and npm 12.2.0. `npm run check` passed lint, TypeScript validation, 75 domain/API tests, six bounded-brace checks, three WebMCP argument checks and the production build. Pinned Chromium 153.0.8010.12 passed 14 framework browser checks and 16 controlled shared-room checks. These include native `read_lazer` invocation and argument rejection, development sign-in, a real local database restart, stopped-backup restoration and separate fictional shared-room identities.
+
+Separate manual browser checks completed the public solo example, exact 83,334-sat margin reservations and 7,936-sat gains and losses. The four-command journal survived reload and replay in a fresh tab. An anonymous native `read_lazer` call against the isolated exact-main local server returned the empty Testnet 4 view and disappeared after navigation to shared rooms. These checks used no production sign-in or funded wallet.
+
+Next.js 16.4.6 clears the two reported Next.js advisories from the package audit. Vite 8.3.8 resolves Rolldown 1.2.19, beyond the independently reported Vite advisory's patched floor. The November 17 candidate audit returned 19 high-severity dependency-graph entries linked to the Picomatch advisory.
+
+## November 19, 2026 combined source candidate
+
+GitHub [withdrew the Picomatch advisory](https://github.com/advisories/GHSA-fc5q-39xc-vjpf). The combined 1.0.4 candidate pins Next.js 16.4.6, invoices 6.3.4 and tiny-secp256k1 2.2.5. npm 12.2.0 reported zero findings on the combined lockfile. A clean install with lifecycle scripts disabled, lint, TypeScript and five offline invoice and signature checks passed on Windows with Node 24.22.3. The release workflow runs the full browser, packaging and consumer checks. The dated protocol and production-account evidence below retains its original scope.
+
 ## Derivatives and Lightning milestone
 
 The suite now includes inverse P&L, collateral conservation, price/time matching, partial fills, liquidation scenarios, and offline Lightning invoice inspection. A separate Bitcoin Core/LND regtest run completed a 100,000 sat payment and 15,000 sat return. See [the evidence](evidence/lightning-regtest.json) and [reproduction instructions](DERIVATIVES.md#lightning-regtest-verification). The Lightning test is separate from browser practice balances.

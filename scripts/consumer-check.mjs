@@ -12,4 +12,4 @@ npm(['exec','--','playwright','install','chromium']);
 npm(['run','check']);
 npm(['run','setup:local']);
 npm(['run','setup:local']);
-console.log('Fresh Lazer source consumer passed locked install, types, 72 engine/API checks, production build, real framework/browser recovery, native WebMCP, controlled shared identities and repeat local setup.');
+console.log('Fresh Lazer source consumer passed locked install, lint, types, engine/API and compatibility checks, production build, framework/browser recovery, native WebMCP, controlled shared identities and repeat local setup.');
