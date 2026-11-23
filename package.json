@@ -31,7 +31,7 @@
     "@base-ui/react": "1.8.0",
     "@bitcoinerlab/secp256k1": "2.0.0",
     "@shadcn/react": "0.3.1",
-    "bitcoinjs-lib": "7.0.2",
+    "bitcoinjs-lib": "7.0.5",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "1.1.1",
