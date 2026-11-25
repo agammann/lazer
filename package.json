@@ -28,7 +28,7 @@
     "security:audit": "npm audit --audit-level=info"
   },
   "dependencies": {
-    "@base-ui/react": "1.8.0",
+    "@base-ui/react": "1.9.0",
     "@bitcoinerlab/secp256k1": "2.0.0",
     "@shadcn/react": "0.3.1",
     "bitcoinjs-lib": "7.0.5",
